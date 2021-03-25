@@ -1,66 +1,40 @@
 package ru.peytob.mineville.opengl.shader;
 
-import java.nio.FloatBuffer;
+import org.lwjgl.opengl.GL33;
+import org.lwjgl.system.MemoryStack;
 
-import org.lwjgl.BufferUtils;
+import java.nio.IntBuffer;
+
 import static org.lwjgl.opengl.GL33.*;
 
 public class Shader {
-    /**
-     * Vertex Array Object.
-     */
-    private final int vao;
+    private final int id;
+    private final int type;
 
-    /**
-     * Vertex Buffer Object.
-     */
-    private final int vbo;
+    public Shader(String _code, int _type) throws RuntimeException {
+        type = _type;
+        id = glCreateShader(type);
+        GL33.glShaderSource(id, _code);
+        GL33.glCompileShader(id);
 
-    /**
-     * Sizes of array.
-     */
-    private final int vertexesSizes;
-
-    public Shader(float[] _vertices) {
-        vertexesSizes = _vertices.length;
-
-        FloatBuffer vertexData = BufferUtils.createFloatBuffer(vertexesSizes);
-        vertexData.put(_vertices);
-        vertexData.flip();
-
-        vao = glGenVertexArrays();
-        glBindVertexArray(vao);
-
-        vbo = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
-
-        // Position.
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 8 * 4, 0L);
-
-        // Normal.
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, false, 8 * 4, 3L * 4L);
-
-        // UV-coordinates.
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * 4, 6L * 4L);
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            final IntBuffer intBuffer = stack.mallocInt(1);
+            GL33.glGetShaderiv(id, GL33.GL_COMPILE_STATUS, intBuffer);
+            if (intBuffer.get(0) == 0) {
+                throw new RuntimeException("Shader not compiled: " + GL33.glGetShaderInfoLog(id));
+            }
+        }
     }
 
-    /**
-     * Deletes mesh data from memory.
-     */
     public void destroy() {
-        glDeleteBuffers(vao);
-        glDeleteBuffers(vbo);
+        glDeleteShader(id);
     }
 
-    /**
-     * Render object.
-     */
-    public void draw() {
-        glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, vertexesSizes / 3);
+    public int getId() {
+        return id;
+    }
+
+    public int getType() {
+        return type;
     }
 }
