@@ -12,101 +12,32 @@ import ru.peytob.mineville.machine.nodes.RootNode;
 public abstract class BehaviorTree implements IBehaviorTree {
 
     protected RootNode root;
-    protected TaskController taskController;
     protected Context context;
     protected NodeState state;
 
     public BehaviorTree() {
         context = new Context();
-        taskController = new TaskController();
-        root = new RootNode(taskController, context);
+        root = new RootNode(context);
     }
+
+    /** Sets the states of all the tree nodes as "ready" */
+    public void setReady()
+    {
+        try {
+            root.setReady();
+        }
+        catch(ChildException ex)
+        {}
+    }
+
 
     //Метод, обновляющий состояние дерева
-    public abstract NodeState tick();
-
-    public class TaskController {
-        Node currentTask;
-        TCThread currentThread;
-        boolean currentTaskFinished;
-
-        public TaskController() {
-            currentTaskFinished = true;
-        }
-
-        public void interruptCurrentTask() {
-            currentThread.disable();
-            currentTaskFinished = true;
-            currentTask.setState(NodeState.READY);
-            if (currentTask.getParent() != null)
-                try {
-                    currentTask.getParent().resetCurrentSubtask();
-                } catch (ChildException ex) {
-                    System.out.println(ex);
-                }
-        }
-
-        public void interruptTask(Node _task) {
-            if (currentTask == _task) {
-                currentThread.disable();
-                currentTaskFinished = true;
-                currentTask.setState(NodeState.READY);
-                if (currentTask.getParent() != null)
-                    try {
-                        currentTask.getParent().resetCurrentSubtask();
-                    } catch (ChildException ex) {
-                        System.out.println(ex);
-                    }
-            }
-        }
-
-        public void performTask(Node _task) {
-            if (_task == null) {
-                _task.setState(NodeState.ERROR);
-                throw new NullPointerException();
-            }
-
-            if (!(_task instanceof LeafNode)) //Если текущий узел - не листовой
-            {
-                performTask(_task.getCurrentSubtask()); //Вызываем эту же функцию для потомка узла
-                return;
-            }
-
-            //Ждем, пока текущая задача завершится
-            for (; !currentTaskFinished; ) ;
-
-            currentTask = _task;
-
-            //Выделяем поток для новой задачи
-            currentTaskFinished = false;
-            currentThread = new TCThread((LeafNode) _task);
-            currentThread.start();
-        }
-
-        //Класс для работы с потоками
-        class TCThread extends Thread {
-            private LeafNode taskToPerform;
-            private boolean isActive;
-
-            TCThread(LeafNode _taskToPerform) {
-                super();
-                taskToPerform = _taskToPerform;
-                isActive = true;
-            }
-
-            public void run() {
-                while (isActive && !currentTaskFinished) {
-                    taskToPerform.doAction();
-                    currentTaskFinished = true;
-                }
-            }
-
-            public void disable() {
-                isActive = false;
-            }
-        }
-
+    public NodeState tick()
+    {
+        return root.tick();
     }
+
+
 
     //Контекст хранит переменные, которые нужны узлам для выполнения их задач
     public class Context {

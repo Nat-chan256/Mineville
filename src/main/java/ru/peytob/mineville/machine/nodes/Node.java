@@ -2,7 +2,6 @@ package ru.peytob.mineville.machine.nodes;
 
 import java.util.Vector;
 
-import ru.peytob.mineville.machine.BehaviorTree.TaskController;
 import ru.peytob.mineville.machine.BehaviorTree.Context;
 
 public abstract class Node implements INode {
@@ -13,12 +12,10 @@ public abstract class Node implements INode {
     protected Node currentSubtask;
     protected Node parent;
     protected NodeState state;
-    protected TaskController taskController;
 
-    public Node(TaskController _taskController, Context _context) {
+    public Node(Context _context) {
         children = new Vector<Node>();
         state = NodeState.READY;
-        taskController = _taskController;
         context = _context;
     }
 
@@ -28,8 +25,6 @@ public abstract class Node implements INode {
             currentSubtask = children.elementAt(0);
         _child.setParent(this);
     }
-
-    public abstract void performTask() throws ChildException;
 
     public void resetCurrentSubtask() throws ChildException {
         try {
@@ -61,7 +56,6 @@ public abstract class Node implements INode {
 
     //Переводит данный узел вместе со всеми его детьми в состояние "ready"
     public void setReady() throws ChildException {
-        taskController.interruptTask(this);
         state = NodeState.READY;
         for (Node child : children)
             child.setReady();

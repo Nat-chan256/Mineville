@@ -1,27 +1,36 @@
 package ru.peytob.mineville.machine.nodes;
 
-import ru.peytob.mineville.machine.BehaviorTree.TaskController;
+
 import ru.peytob.mineville.machine.BehaviorTree.Context;
 
 public abstract class LeafNode extends Node {
 
-    public LeafNode(TaskController _taskController, Context _context) {
-        super(_taskController, _context);
+    public LeafNode(Context _context) {
+        super(_context);
     }
 
     @Override
     public NodeState tick() {
-        if (state == NodeState.READY)
+        try
+        {
+            if (state == NodeState.READY)
+            {
+                state = NodeState.RUNNING;
+            }
+            return state;
+        }
+        finally
+        {
             performTask();
-        return state;
+        }
     }
 
-    @Override
+    /**
+     * Performing task given to this leaf node.
+     * Assumes changing leaf node state
+     *  */
     public void performTask() {
-        taskController.performTask(this);
+        state = NodeState.SUCCESS;
     }
 
-    public void doAction() {
-        state = NodeState.RUNNING;
-    }
 }

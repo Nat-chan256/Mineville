@@ -1,6 +1,6 @@
 package ru.peytob.mineville.machine.nodes.decorators;
 
-import ru.peytob.mineville.machine.BehaviorTree.TaskController;
+
 import ru.peytob.mineville.machine.BehaviorTree.Context;
 
 public class LimitNode extends DecoratorNode {
@@ -8,8 +8,8 @@ public class LimitNode extends DecoratorNode {
     private int limit;
     private int counter;
 
-    public LimitNode(TaskController taskController, Context context, int limit) {
-        super(taskController, context);
+    public LimitNode(Context context, int limit) {
+        super(context);
         limit = limit;
     }
 
@@ -25,8 +25,7 @@ public class LimitNode extends DecoratorNode {
 
         if (state == NodeState.SUCCESS) {
             counter++;
-            //Запускаем задачу заново
-            performTask();
+            children.elementAt(0).setReady();
             state = NodeState.RUNNING;
         }
 

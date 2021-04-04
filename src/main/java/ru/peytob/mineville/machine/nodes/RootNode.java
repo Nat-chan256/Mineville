@@ -1,16 +1,16 @@
 package ru.peytob.mineville.machine.nodes;
 
-import ru.peytob.mineville.machine.BehaviorTree.TaskController;
+
 import ru.peytob.mineville.machine.BehaviorTree.Context;
 
 public class RootNode extends Node {
 
-    public RootNode(TaskController _taskController, Context _context) {
-        super(_taskController, _context);
+    public RootNode(Context _context) {
+        super(_context);
     }
 
-    public RootNode(TaskController _taskController, Context _context, Node... _children) {
-        super(_taskController, _context);
+    public RootNode(Context _context, Node... _children) {
+        super(_context);
         for (Node child : _children)
             children.add(child);
     }
@@ -42,15 +42,5 @@ public class RootNode extends Node {
 
         if (readyFlag) return NodeState.READY;
         else return NodeState.SUCCESS;
-    }
-
-    @Override
-    public void performTask() {
-        for (Node child : children)
-            try {
-                child.performTask();
-            } catch (ChildException ex) {
-                state = NodeState.ERROR;
-            }
     }
 }

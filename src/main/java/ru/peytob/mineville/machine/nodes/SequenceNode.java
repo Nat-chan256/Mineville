@@ -1,23 +1,39 @@
 package ru.peytob.mineville.machine.nodes;
 
-import ru.peytob.mineville.machine.BehaviorTree.TaskController;
+
 import ru.peytob.mineville.machine.BehaviorTree.Context;
 
 public class SequenceNode extends Node {
 
-    public SequenceNode(TaskController _taskController, Context _context) {
-        super(_taskController, _context);
+    public SequenceNode(Context _context) {
+        super(_context);
+    }
+
+    /** Add the child.
+     * If the child is the first one for this node, sets this child as current subtask.
+     * @param child node to add to the children list
+     * */
+    @Override
+    public void addChild(Node child)
+    {
+        children.add(child);
+        if (children.size() == 1)
+        {
+            currentSubtask = children.elementAt(0);
+        }
     }
 
     @Override
     public NodeState tick() {
-        if (currentSubtask == null) {
-            try {
-                currentSubtask = children.elementAt(0);
-            } catch (IndexOutOfBoundsException ex) {
-                state = NodeState.ERROR;
-                return state;
-            }
+        if (children.size() == 0)
+        {
+            state = NodeState.ERROR;
+            return state;
+        }
+
+        if (currentSubtask == null)
+        {
+            return state;
         }
 
         try {
@@ -28,28 +44,22 @@ public class SequenceNode extends Node {
         }
 
         if (state == NodeState.SUCCESS)
+        {
             currentSubtask = nextChild(currentSubtask);
+            tick();
+        }
+        else if (state == NodeState.FAIL)
+        {
+            currentSubtask = children.elementAt(0);
+            return state;
+        }
 
         if (currentSubtask != null)
+        {
             state = NodeState.RUNNING;
+        }
 
         return state;
-    }
-
-    @Override
-    public void performTask() throws ChildException {
-        if (currentSubtask == null)
-            try {
-                currentSubtask = children.elementAt(0);
-            } catch (IndexOutOfBoundsException ex) {
-                state = NodeState.ERROR;
-                throw new ChildException("Sequence node has no children");
-            }
-        try {
-            currentSubtask.performTask();
-        } catch (ChildException ex) {
-            state = NodeState.ERROR;
-        }
     }
 
     @Override

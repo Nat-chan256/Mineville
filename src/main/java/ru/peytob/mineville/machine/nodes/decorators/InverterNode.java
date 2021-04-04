@@ -1,11 +1,11 @@
 package ru.peytob.mineville.machine.nodes.decorators;
 
-import ru.peytob.mineville.machine.BehaviorTree.TaskController;
+
 import ru.peytob.mineville.machine.BehaviorTree.Context;
 
 public class InverterNode extends DecoratorNode {
-    public InverterNode(TaskController _taskController, Context _context) {
-        super(_taskController, _context);
+    public InverterNode(Context _context) {
+        super(_context);
     }
 
     @Override

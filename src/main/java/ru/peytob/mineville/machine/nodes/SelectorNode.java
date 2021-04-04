@@ -1,6 +1,6 @@
 package ru.peytob.mineville.machine.nodes;
 
-import ru.peytob.mineville.machine.BehaviorTree.TaskController;
+
 import ru.peytob.mineville.machine.BehaviorTree.Context;
 
 
@@ -8,20 +8,59 @@ public class SelectorNode extends Node {
 
     protected Node currentSubtask;
 
-    public SelectorNode(TaskController _taskController, Context _context) {
-        super(_taskController, _context);
+    public SelectorNode(Context _context) {
+        super(_context);
         currentSubtask = null;
     }
 
     @Override
-    public NodeState tick() {
-        if (currentSubtask == null) {
+    public void setReady()
+    {
+        state = NodeState.READY;
+        if (children.size() == 0)
+        {
+            return;
+        }
+        currentSubtask = children.elementAt(0);
+        for (Node child : children)
+        {
             try {
-                currentSubtask = children.elementAt(0);
-            } catch (IndexOutOfBoundsException ex) {
-                state = NodeState.ERROR;
-                return state;
+                child.setReady();
             }
+            catch(ChildException ex)
+            {
+                continue;
+            }
+        }
+    }
+
+
+    /** Add the child.
+     * If the child is the first one for this node, sets this child as current subtask.
+     * @param child node to add to the children list
+     * */
+    @Override
+    public void addChild(Node child)
+    {
+        children.add(child);
+        if (children.size() == 1)
+        {
+            currentSubtask = children.elementAt(0);
+        }
+    }
+
+
+    @Override
+    public NodeState tick() {
+        if (children.size() == 0)
+        {
+            state = NodeState.ERROR;
+            return state;
+        }
+
+        if (currentSubtask == null)
+        {
+            return state;
         }
 
         try {
@@ -31,31 +70,23 @@ public class SelectorNode extends Node {
             return state;
         }
 
-        if (state == NodeState.FAIL) {
+        if (state == NodeState.FAIL)
+        {
             currentSubtask = nextChild(currentSubtask);
-            if (currentSubtask == null)
-                return state;
-            else {
-                state = NodeState.RUNNING;
-                try {
-                    currentSubtask.performTask();
-                } catch (ChildException ex) {
-                    state = NodeState.ERROR;
-                }
-                return state;
-            }
+            tick();
+        }
+        else if (state == NodeState.SUCCESS)
+        {
+            currentSubtask = children.elementAt(0);
+            return state;
+        }
+
+        if (currentSubtask != null)
+        {
+            state = NodeState.RUNNING;
         }
 
         return state;
-    }
-
-    @Override
-    public void performTask() {
-        try {
-            currentSubtask.performTask();
-        } catch (ChildException ex) {
-            state = NodeState.ERROR;
-        }
     }
 
     protected Node nextChild(Node _child) {
