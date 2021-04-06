@@ -10,7 +10,15 @@ public class LimitNode extends DecoratorNode {
 
     public LimitNode(Context context, int limit) {
         super(context);
-        limit = limit;
+        this.limit = limit;
+    }
+
+    /** Sets the node state as "ready" and nullifies the counter. */
+    @Override
+    public void setReady() throws ChildException
+    {
+        super.setReady();
+        counter = 0;
     }
 
     @Override
@@ -18,14 +26,20 @@ public class LimitNode extends DecoratorNode {
         if (children.size() == 0) throw new ChildException("Decorator has no child.");
 
         if (counter >= limit)
+        {
             return state;
-
-        NodeState childState = children.elementAt(0).tick();
-        state = childState;
+        }
+        
+        state = children.elementAt(0).tick();
 
         if (state == NodeState.SUCCESS) {
             counter++;
+            if (counter == limit)
+            {
+                return state;
+            }
             children.elementAt(0).setReady();
+            children.elementAt(0).tick();
             state = NodeState.RUNNING;
         }
 
