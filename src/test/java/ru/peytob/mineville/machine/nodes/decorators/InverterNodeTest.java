@@ -30,11 +30,10 @@ public class InverterNodeTest {
     {
         public CheckDoorOpenBT()
         {
-            InverterNode inverter = new InverterNode(context);
+            root = new InverterNode(context);
 
             try {
-                inverter.addChild(new IsDoorOpenNode(context));
-                root.addChild(inverter);
+                root.addChild(new IsDoorOpenNode(context));
             }
             catch(Node.ChildException ex)
             {

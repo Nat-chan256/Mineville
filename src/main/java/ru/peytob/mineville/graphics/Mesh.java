@@ -1,4 +1,4 @@
-package ru.peytob.mineville.graphic;
+package ru.peytob.mineville.graphics;
 
 import java.nio.FloatBuffer;
 

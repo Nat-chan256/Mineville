@@ -14,14 +14,13 @@ public class SelectorNodeTest
         {
             super();
 
-            SelectorNode selector = new SelectorNode(context);
+            root = new SelectorNode(context);
 
             try
             {
-                selector.addChild(new IsDoorOpenNode(context));
-                selector.addChild(new HasKeyNode(context));
-                selector.addChild(new CanBreakDownDoor(context));
-                root.addChild(selector);
+                root.addChild(new IsDoorOpenNode(context));
+                root.addChild(new HasKeyNode(context));
+                root.addChild(new CanBreakDownDoor(context));
             }
             catch(Node.ChildException ex)
             {
@@ -63,7 +62,14 @@ public class SelectorNodeTest
         @Override
         public Node.NodeState tick()
         {
-            return root.tick();
+            try {
+                return root.tick();
+            }
+            catch(Node.ChildException ex)
+            {
+                state = Node.NodeState.ERROR;
+                return state;
+            }
         }
 
 

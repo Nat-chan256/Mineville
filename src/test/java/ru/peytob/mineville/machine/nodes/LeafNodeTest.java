@@ -34,11 +34,7 @@ public class LeafNodeTest {
 
         public CalculationsTree()
         {
-            root = new RootNode(context);
-            try {
-                root.addChild(new SumNode(context));
-            }catch(Node.ChildException ex)
-            {}
+            root = new SumNode(context);
 
             context.setVariable("a", 15);
             context.setVariable("b", 7);
@@ -50,8 +46,15 @@ public class LeafNodeTest {
         }
 
         @Override
-        public Node.NodeState tick() {
-            return root.tick();
+        public Node.NodeState tick()  {
+            try {
+                return root.tick();
+            }
+            catch(Node.ChildException ex)
+            {
+                state = Node.NodeState.ERROR;
+                return state;
+            }
         }
     }
 

@@ -3,63 +3,64 @@ package ru.peytob.mineville.machine.nodes;
 
 import ru.peytob.mineville.machine.BehaviorTree.Context;
 
-
+/**
+ * Selector node.
+ * Consistently performs its children tasks until one of them succeeds.
+ */
 public class SelectorNode extends Node {
 
-    protected Node currentSubtask;
-
+    /**
+     * Constructor that sets the link on the context.
+     * @param _context context of the tree the node belong to
+     */
     public SelectorNode(Context _context) {
         super(_context);
         currentSubtask = null;
     }
 
+    /**
+     * Set state as READY for this node and all its children.
+     * Also resets current subtask.
+     */
     @Override
-    public void setReady()
-    {
-        state = NodeState.READY;
-        if (children.size() == 0)
+    public void setReady() {
+        super.setReady();
+        if (children.size() > 0)
         {
-            return;
-        }
-        currentSubtask = children.elementAt(0);
-        for (Node child : children)
-        {
-            try {
-                child.setReady();
-            }
-            catch(ChildException ex)
-            {
-                continue;
-            }
+            currentSubtask = children.get(0);
         }
     }
 
 
-    /** Add the child.
+    /**
+     * Adding the child.
      * If the child is the first one for this node, sets this child as current subtask.
-     * @param child node to add to the children list
-     * */
+     * @param _child node to add to the children list
+     */
     @Override
-    public void addChild(Node child)
-    {
-        children.add(child);
-        if (children.size() == 1)
-        {
-            currentSubtask = children.elementAt(0);
+    public void addChild(Node _child) {
+        children.add(_child);
+        if (children.size() == 1) {
+            currentSubtask = children.get(0);
         }
     }
 
 
+    /**
+     * Updates the node's state and makes its children perform their tasks.
+     * @return SUCCESS if current subtask returned SUCCESS;
+     *         RUNNING if current subtask returned RUNNING or FAIL;
+     *         FAIL if current subtask returned FAIL and it appeared the last subtask from children list;
+     *         child node's state otherwise
+     */
     @Override
     public NodeState tick() {
-        if (children.size() == 0)
-        {
+        if (children.size() == 0) {
             state = NodeState.ERROR;
             return state;
         }
 
-        if (currentSubtask == null)
-        {
+        if (currentSubtask == null) {
             return state;
         }
 
@@ -70,29 +71,30 @@ public class SelectorNode extends Node {
             return state;
         }
 
-        if (state == NodeState.FAIL)
-        {
+        if (state == NodeState.FAIL) {
             currentSubtask = nextChild(currentSubtask);
             tick();
-        }
-        else if (state == NodeState.SUCCESS)
-        {
-            currentSubtask = children.elementAt(0);
+        } else if (state == NodeState.SUCCESS) {
+            currentSubtask = children.get(0);
             return state;
         }
 
-        if (currentSubtask != null)
-        {
+        if (currentSubtask != null) {
             state = NodeState.RUNNING;
         }
 
         return state;
     }
 
+    /**
+     * Finds the next child in children list.
+     * @param _child child node whose successor we want to find
+     * @return the next child in the children list or the one if _child is last in the list
+     */
     protected Node nextChild(Node _child) {
         for (int i = 0; i < children.size(); ++i)
-            if (children.elementAt(i) == _child && i != children.size() - 1)
-                return children.elementAt(i + 1);
+            if (children.get(i) == _child && i != children.size() - 1)
+                return children.get(i + 1);
 
         return null;
     }

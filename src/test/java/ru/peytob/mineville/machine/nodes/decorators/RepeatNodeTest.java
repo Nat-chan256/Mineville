@@ -26,11 +26,10 @@ public class RepeatNodeTest {
         {
             super();
 
-            RepeatNode repeater = new RepeatNode(context);
+            root = new RepeatNode(context);
 
             try {
-                repeater.addChild(new EmptyLeafNode(context));
-                root.addChild(repeater);
+                root.addChild(new EmptyLeafNode(context));
             }
             catch(Node.ChildException ex)
             {}

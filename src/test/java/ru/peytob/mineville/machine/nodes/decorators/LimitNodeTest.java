@@ -27,11 +27,10 @@ public class LimitNodeTest {
         public KnockThreeTimesBT()
         {
             super();
-            LimitNode limitNode = new LimitNode(context, 3);
+            root = new LimitNode(context, 3);
 
             try {
-                limitNode.addChild(new KnockDoorNode(context));
-                root.addChild(limitNode);
+                root.addChild(new KnockDoorNode(context));
             }
             catch(Node.ChildException ex)
             {}

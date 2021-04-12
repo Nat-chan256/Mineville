@@ -39,13 +39,12 @@ public class SequenceNodeTest
         public CookSandwichBT()
         {
            super();
-           SequenceNode sequence = new SequenceNode(context);
+           root = new SequenceNode(context);
 
            try {
-               sequence.addChild(new CutBreadPieceNode(context));
-               sequence.addChild(new CutSausagePieceNode(context));
-               sequence.addChild(new PutSausageOnBreadNode(context));
-               root.addChild(sequence);
+               root.addChild(new CutBreadPieceNode(context));
+               root.addChild(new CutSausagePieceNode(context));
+               root.addChild(new PutSausageOnBreadNode(context));
            }
            catch(Node.ChildException ex)
            {}

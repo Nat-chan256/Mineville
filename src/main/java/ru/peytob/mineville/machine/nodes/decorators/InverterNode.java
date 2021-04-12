@@ -1,18 +1,31 @@
 package ru.peytob.mineville.machine.nodes.decorators;
 
-
 import ru.peytob.mineville.machine.BehaviorTree.Context;
 
+/**
+ * Inverter node class.
+ * Changes the child node's performing result to the opposite value.
+ */
 public class InverterNode extends DecoratorNode {
-    public InverterNode(Context _context) {
-        super(_context);
+
+    /**
+     * Constructor that sets the link on the context.
+     * @param context context of the tree the node belong to
+     */
+    public InverterNode(Context context) {
+        super(context);
     }
 
+    /**
+     * Sends a signal to update node's state.
+     * @return SUCCESS if child node fails; FAIL if child node succeeds; child node's state - otherwise
+     * @throws ChildException when decorator has no child
+     */
     @Override
     public NodeState tick() throws ChildException {
         if (children.size() == 0) throw new ChildException("Decorator has no child.");
 
-        NodeState childState = children.elementAt(0).tick();
+        NodeState childState = children.get(0).tick();
         if (childState == NodeState.SUCCESS) {
             state = NodeState.FAIL;
             return state;
