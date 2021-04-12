@@ -43,4 +43,8 @@ public class Vec3iTest extends TestCase {
     public void testToVec3() {
         assertEquals(new Vec3(5f, 10f, -25f), new Vec3i(5, 10, -25).toVec3());
     }
+
+    public void testLength() {
+        assertEquals(9.0f, new Vec3i(1, 4, 8).length());
+    }
 }

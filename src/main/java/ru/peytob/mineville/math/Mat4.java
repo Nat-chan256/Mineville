@@ -2,13 +2,24 @@ package ru.peytob.mineville.math;
 
 import java.util.Arrays;
 
+/**
+ * Implements storage and processing of a 4x4 float matrix.
+ */
 public final class Mat4 {
     private float[] data = new float[16];
 
+    /**
+     * Creates a zero matrix.
+     */
     public Mat4() {
 
     }
 
+    /**
+     * Creates a matrix and fill its from _data array.
+     * @param _data Data for filling in the matrix.
+     * @throws NumberFormatException If there are not 16 elements in the array.
+     */
     public Mat4(float[] _data) throws NumberFormatException {
         if (_data.length != 16)
             throw new NumberFormatException("Sizes of _data array should be 16 (4 x 4).");
@@ -16,26 +27,61 @@ public final class Mat4 {
         data = _data.clone();
     }
 
+    /**
+     * Copy constructor.
+     * @param _other Other matrix.
+     */
     public Mat4(Mat4 _other) {
-        data = _other.data.clone();
+        data = Arrays.copyOf(_other.data, _other.data.length);
     }
 
+    /**
+     * Returns element by index.
+     * @param _index Index of element.
+     * @return Element of matrix.
+     * @throws IndexOutOfBoundsException If index is negative or more than 15.
+     */
     public float get(int _index) throws IndexOutOfBoundsException {
         return data[_index];
     }
 
+    /**
+     * Returns element by row and column.
+     * @param _row Row of element.
+     * @param _column Column of element.
+     * @return Element of matrix at specified row and column. Alias for get(_row * 4 + _column).
+     * @throws IndexOutOfBoundsException If _row * 4 + _column is negative or more than 15.
+     */
     public float get(int _row, int _column) throws IndexOutOfBoundsException {
         return get(_row * 4 + _column);
     }
 
+    /**
+     * Sets value of specified element.
+     * @param _index Index of element.
+     * @param _data New data of element.
+     * @throws IndexOutOfBoundsException If index is negative or more than 15.
+     */
     public void set(int _index, float _data) throws IndexOutOfBoundsException {
         data[_index] = _data;
     }
 
+    /**
+     * Sets value of specified element. Alias for set(_row * 4 + _column).
+     * @param _row Row of element.
+     * @param _column Column of element.
+     * @param _data New data of element.
+     * @throws IndexOutOfBoundsException If index is negative or more than 15.
+     */
     public void set(int _row, int _column, float _data) throws IndexOutOfBoundsException {
         set(_row * 4 + _column, _data);
     }
 
+    /**
+     * Returns sum of two matrices.
+     * @param _right Right matrix.
+     * @return Sum of two matrices.
+     */
     public Mat4 plus(Mat4 _right) {
         Mat4 result = new Mat4();
         for (int i = 0; i < data.length; ++i)
@@ -44,6 +90,11 @@ public final class Mat4 {
         return result;
     }
 
+    /**
+     * Returns subtraction of two matrices.
+     * @param _right Right matrix.
+     * @return Subtraction of two matrices.
+     */
     public Mat4 minus(Mat4 _right) {
         Mat4 result = new Mat4();
         for (int i = 0; i < data.length; ++i)
@@ -52,6 +103,11 @@ public final class Mat4 {
         return result;
     }
 
+    /**
+     * Returns multiplication of two matrices.
+     * @param _right Right matrix.
+     * @return Multiplication of two matrices.
+     */
     public Mat4 multiplication(Mat4 _right) {
         float[] resultArray = new float[]{
                 _right.get(0, 0) * get(0, 0) + _right.get(1, 0) * get(0, 1) +
@@ -91,6 +147,10 @@ public final class Mat4 {
         return new Mat4(resultArray);
     }
 
+    /**
+     * Returns the transposed matrix.
+     * @return The transposed matrix.
+     */
     public Mat4 transpose() {
         Mat4 transposed = new Mat4(this);
 
@@ -105,6 +165,10 @@ public final class Mat4 {
         return transposed;
     }
 
+    /**
+     * Returns a raw data of matrix.
+     * @return Raw data of array.
+     */
     public float[] toFloatArray() {
         return data;
     }

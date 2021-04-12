@@ -20,7 +20,7 @@ public class Vec3Test extends TestCase {
         Vec3 left = new Vec3(9.25f, -10.1f, 5.01f);
         Vec3 right = new Vec3(-5.25f, -1.0f, -102f);
         assertEquals(new Vec3(14.5f, -9.1f, 107.01f), left.minus(right));
-        assertEquals(new Vec3(-0.75f, -20.0f, 4.99f), left.minus(10.0f));
+        assertEquals(new Vec3(-0.75f, -20.1f, -4.99f), left.minus(10.0f));
     }
 
     public void testMultiplication() {
