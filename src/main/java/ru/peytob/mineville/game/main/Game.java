@@ -1,12 +1,12 @@
 package ru.peytob.mineville.game.main;
 
-import ru.peytob.mineville.game.state.IState;
+import ru.peytob.mineville.game.state.AbstractState;
 
 public class Game {
-    private IState state;
+    private AbstractState state;
 
-    public Game(IState _startState) {
-        this.state = _startState;
+    public Game(AbstractState _startState) {
+        setState(_startState);
     }
 
     public void tick() {
@@ -20,7 +20,7 @@ public class Game {
     public void destroy() {
     }
 
-    public void setState(IState _next) {
+    public void setState(AbstractState _next) {
         state.onChange();
         state = _next;
         state.onLoad();
