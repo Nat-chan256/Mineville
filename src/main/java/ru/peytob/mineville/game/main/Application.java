@@ -1,5 +1,6 @@
 package ru.peytob.mineville.game.main;
 
+import ru.peytob.mineville.game.state.InGame;
 import ru.peytob.mineville.system.Window;
 
 public class Application {
@@ -11,7 +12,7 @@ public class Application {
         if (!isInitialized) {
             isInitialized = true;
             window = new Window("Mineville", 800, 600);
-            game = new Game();
+            game = new Game(new InGame(game));
         }
     }
 

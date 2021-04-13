@@ -80,6 +80,10 @@ public class Window {
         glfwPollEvents();
     }
 
+    /**
+     * Returns pointer to window.
+     * @return Pointer to window
+     */
     public long getPointer() {
         return pointer;
     }
