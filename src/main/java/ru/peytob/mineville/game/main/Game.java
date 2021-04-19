@@ -1,12 +1,16 @@
 package ru.peytob.mineville.game.main;
 
 import ru.peytob.mineville.game.state.AbstractState;
+import ru.peytob.mineville.game.state.EmptyState;
+import ru.peytob.mineville.system.Window;
 
 public class Game {
     private AbstractState state;
+    private final Window window;
 
-    public Game(AbstractState _startState) {
-        setState(_startState);
+    public Game(Window _window) {
+        setState(new EmptyState(this));
+        this.window = _window;
     }
 
     public void tick() {
@@ -17,12 +21,22 @@ public class Game {
         state.draw();
     }
 
+    public void stop() {
+        window.close();
+    }
+
     public void destroy() {
     }
 
     public void setState(AbstractState _next) {
-        state.onChange();
+        if (state != null) {
+            state.onChange();
+        }
         state = _next;
         state.onLoad();
+    }
+
+    public Window getWindow() {
+        return window;
     }
 }

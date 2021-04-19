@@ -12,7 +12,8 @@ public class Application {
         if (!isInitialized) {
             isInitialized = true;
             window = new Window("Mineville", 800, 600);
-            game = new Game(new InGame(game));
+            game = new Game(window);
+            game.setState(new InGame(game));
         }
     }
 
