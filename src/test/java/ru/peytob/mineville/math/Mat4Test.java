@@ -2,8 +2,6 @@ package ru.peytob.mineville.math;
 
 import junit.framework.TestCase;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 public class Mat4Test extends TestCase {
 
     public void testGet() {

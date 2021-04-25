@@ -11,6 +11,9 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
+    /**
+     * 64 bits pointer to window object in memory.
+     */
     private final long pointer;
 
     public Window(String _title, int _width, int _height) throws RuntimeException {

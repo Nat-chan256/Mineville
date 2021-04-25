@@ -8,15 +8,38 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static  org.lwjgl.glfw.GLFW.*;
 
+/**
+ * Contains set of window callbacks.
+ * Allow you to safe and comfortable manage callbacks in different game states.
+ */
 public class WindowCallbackSet {
+    /**
+     * Char callback in the set.
+     */
     private GLFWCharCallbackI charCallback;
+
+    /**
+     * Mouse callback in set.
+     */
     private GLFWMouseButtonCallbackI mouseButtonCallback;
+
+    /**
+     * Mouse callback in set.
+     */
     private GLFWCursorPosCallbackI mouseMovingCallback;
+
+    /**
+     * Key callback in set.
+     */
     private GLFWKeyCallbackI keyCallback;
 
     public WindowCallbackSet() {
     }
 
+    /**
+     * Sets current set of callbacks as active.
+     * @param _window Target window.
+     */
     public void use(Window _window) {
         glfwFreeCallbacks(_window.getPointer());
         glfwSetCharCallback(_window.getPointer(), charCallback);
