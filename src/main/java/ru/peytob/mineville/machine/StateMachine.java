@@ -3,16 +3,16 @@ package ru.peytob.mineville.machine;
 /**
  * State machine implementation.
  */
-public class SmtMachine implements IMachine {
+public class StateMachine implements IMachine {
 
     /** Current state of machine. */
-    private SmtState state;
+    private State state;
 
     /**
      * Constructor that sets initial state.
      * @param _initialState initial state of machine
      */
-    public SmtMachine(SmtState _initialState) {
+    public StateMachine(State _initialState) {
         state = _initialState;
         state.setParent(this);
     }
@@ -23,7 +23,7 @@ public class SmtMachine implements IMachine {
      */
     public void setState(IState _state) {
         state.destroy();
-        state = (SmtState) _state;
+        state = (State) _state;
         state.setParent(this);
     }
 
@@ -38,7 +38,7 @@ public class SmtMachine implements IMachine {
     /**
      * Abstract state machine state.
      */
-    protected abstract class SmtState implements IState {
+    protected abstract class State implements IState {
         /** Machine the state belongs to. */
         protected IMachine parent;
 
@@ -59,9 +59,9 @@ public class SmtMachine implements IMachine {
     /**
      * Class that demonstrates the state example.
      */
-    protected class SmtFirstState extends SmtState {
+    protected class FirstState extends State {
 
-        public SmtFirstState() {
+        public FirstState() {
             System.out.println("SmtFirstState: start.");
         }
 
@@ -74,15 +74,16 @@ public class SmtMachine implements IMachine {
         public void doSomething() {
             counter++;
             if (counter == 30)
-                parent.setState(new SmtSecondState());
+                parent.setState(new SecondState());
         }
     }
 
     /**
      * Class that demonstrates the state example.
+     *
      */
-    protected class SmtSecondState extends SmtState {
-        public SmtSecondState() {
+    protected class SecondState extends State {
+        public SecondState() {
             System.out.println("SmtSecondState: start.");
         }
 
@@ -95,7 +96,7 @@ public class SmtMachine implements IMachine {
         public void doSomething() {
             counter++;
             if (counter == 120)
-                parent.setState(new SmtFirstState());
+                parent.setState(new FirstState());
         }
     }
 

@@ -12,7 +12,7 @@ import ru.peytob.mineville.machine.BehaviorTree.Context;
 public abstract class Node implements INode {
 
     /** The list of the node's children. */
-    public List<Node> children;
+    protected List<Node> children;
 
     /** Context of tree the node belongs to. Keeps all necessary variables. */
     protected Context context;
@@ -31,6 +31,14 @@ public abstract class Node implements INode {
         children = new ArrayList<Node>();
         state = NodeState.READY;
         context = _context;
+    }
+
+    public List<Node> getChildren() {
+        return children;
+    }
+
+    public NodeState getState() {
+        return state;
     }
 
     /**

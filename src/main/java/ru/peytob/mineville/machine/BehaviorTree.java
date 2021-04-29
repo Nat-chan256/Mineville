@@ -21,6 +21,10 @@ public abstract class BehaviorTree implements IBehaviorTree {
     /** Current state of the tree. */
     protected NodeState state;
 
+    public NodeState getState() {
+        return state;
+    }
+
     /**
      * Constructor that initialize context variable.
      */
