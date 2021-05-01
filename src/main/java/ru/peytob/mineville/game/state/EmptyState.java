@@ -8,6 +8,11 @@ public class EmptyState extends AbstractState {
     }
 
     @Override
+    public void clear() {
+
+    }
+
+    @Override
     public void tick() {
 
     }

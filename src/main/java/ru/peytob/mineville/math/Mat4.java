@@ -6,13 +6,13 @@ import java.util.Arrays;
  * Implements storage and processing of a 4x4 float matrix.
  */
 public final class Mat4 {
-    private float[] data = new float[16];
+    private final float[] data;
 
     /**
      * Creates a zero matrix.
      */
     public Mat4() {
-
+        data = new float[16];
     }
 
     /**
@@ -198,5 +198,38 @@ public final class Mat4 {
         }
 
         return builder.toString();
+    }
+
+    static public Mat4 computeIdentity() {
+        float[] data = new float[] {
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+        };
+
+        return new Mat4(data);
+    }
+
+    static public Mat4 computeScaleMatrix(float _x, float _y, float _z) {
+        float[] data = new float[] {
+                _x, 0, 0, 0,
+                0, _y, 0, 0,
+                0, 0, _z, 0,
+                0, 0, 0, 1
+        };
+
+        return new Mat4(data);
+    }
+
+    static public Mat4 computeTranslation(float _x, float _y, float _z) {
+        float[] data = new float[] {
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                _x, _y, _z, 1
+        };
+
+        return new Mat4(data);
     }
 }

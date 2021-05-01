@@ -13,6 +13,10 @@ public class Game {
         this.window = _window;
     }
 
+    public void clear() {
+        state.clear();
+    }
+
     public void tick() {
         state.tick();
     }

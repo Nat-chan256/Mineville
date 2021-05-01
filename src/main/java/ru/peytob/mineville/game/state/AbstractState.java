@@ -9,6 +9,8 @@ public abstract class AbstractState {
         this.game = _game;
     }
 
+    public abstract void clear();
+
     public abstract void tick();
 
     public abstract void draw();

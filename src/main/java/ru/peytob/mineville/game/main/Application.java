@@ -21,6 +21,7 @@ public class Application {
         while (!window.isClose()) {
             window.pollEvents();
             game.tick();
+            game.clear();
             game.draw();
             window.display();
         }
