@@ -3,11 +3,11 @@ package ru.peytob.mineville.game.registry;
 import java.util.Hashtable;
 import java.util.Map;
 
-abstract class Registry<T extends AbstractRegistrable> {
+abstract class AbstractRegistry<T extends AbstractRegistrable> {
     private final Map<Short, T> registryIds;
     private final Map<String, T> registryText;
 
-    public Registry() {
+    public AbstractRegistry() {
         registryIds = new Hashtable<>();
         registryText = new Hashtable<>();
     }
