@@ -11,9 +11,12 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
+    /**
+     * 64 bits pointer to window object in memory.
+     */
     private final long pointer;
 
-    public Window(String _title, int width, int height) throws RuntimeException {
+    public Window(String _title, int _width, int _height) throws RuntimeException {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -21,7 +24,7 @@ public class Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-        pointer = glfwCreateWindow(width, height, _title, NULL, NULL);
+        pointer = glfwCreateWindow(_width, _height, _title, NULL, NULL);
         if (pointer == NULL) {
             throw new RuntimeException("Window is not created.");
         }
@@ -71,6 +74,10 @@ public class Window {
      */
     public boolean isClose() {
         return glfwWindowShouldClose(pointer);
+    }
+
+    public void close() {
+        glfwSetWindowShouldClose(pointer, true);
     }
 
     /**

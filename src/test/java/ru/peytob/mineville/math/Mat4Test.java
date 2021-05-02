@@ -1,11 +1,12 @@
 package ru.peytob.mineville.math;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
 
-public class Mat4Test extends TestCase {
+public class Mat4Test {
 
+    @Test
     public void testGet() {
         Mat4 someMatrix = new Mat4(new float[]{
                 65, 34, 23, 24,
@@ -14,19 +15,20 @@ public class Mat4Test extends TestCase {
                 1, 2, 3, 4
         });
 
-        assertEquals(65.0f, someMatrix.get(0));
-        assertEquals(65.0f, someMatrix.get(0, 0));
+        assertEquals(65.0f, someMatrix.get(0), 0.001);
+        assertEquals(65.0f, someMatrix.get(0, 0), 0.001);
 
-        assertEquals(89.0f, someMatrix.get(5));
-        assertEquals(89.0f, someMatrix.get(1, 1));
+        assertEquals(89.0f, someMatrix.get(5), 0.001);
+        assertEquals(89.0f, someMatrix.get(1, 1), 0.001);
 
-        assertEquals(4.0f, someMatrix.get(15));
-        assertEquals(4.0f, someMatrix.get(3, 3));
+        assertEquals(4.0f, someMatrix.get(15), 0.001);
+        assertEquals(4.0f, someMatrix.get(3, 3), 0.001);
 
-        assertEquals(87.0f, someMatrix.get(9));
-        assertEquals(87.0f, someMatrix.get(2, 1));
+        assertEquals(87.0f, someMatrix.get(9), 0.001);
+        assertEquals(87.0f, someMatrix.get(2, 1), 0.001);
     }
 
+    @Test
     public void testSet() {
         Mat4 someMatrix = new Mat4(new float[]{
                 65, 34, 23, 24,
@@ -35,19 +37,20 @@ public class Mat4Test extends TestCase {
                 1, 2, 3, 4
         });
 
-        assertEquals(65.0f, someMatrix.get(0));
-        assertEquals(65.0f, someMatrix.get(0, 0));
+        assertEquals(65.0f, someMatrix.get(0), 0.001);
+        assertEquals(65.0f, someMatrix.get(0, 0), 0.001);
 
-        assertEquals(89.0f, someMatrix.get(5));
-        assertEquals(89.0f, someMatrix.get(1, 1));
+        assertEquals(89.0f, someMatrix.get(5), 0.001);
+        assertEquals(89.0f, someMatrix.get(1, 1), 0.001);
 
-        assertEquals(4.0f, someMatrix.get(15));
-        assertEquals(4.0f, someMatrix.get(3, 3));
+        assertEquals(4.0f, someMatrix.get(15), 0.001);
+        assertEquals(4.0f, someMatrix.get(3, 3), 0.001);
 
-        assertEquals(87.0f, someMatrix.get(9));
-        assertEquals(87.0f, someMatrix.get(2, 1));
+        assertEquals(87.0f, someMatrix.get(9), 0.001);
+        assertEquals(87.0f, someMatrix.get(2, 1), 0.001);
     }
 
+    @Test
     public void testPlus() {
         Mat4 left = new Mat4(new float[]{
                 9, 14, 102, 2,
@@ -73,6 +76,7 @@ public class Mat4Test extends TestCase {
         assertEquals(resultExp, left.plus(right));
     }
 
+    @Test
     public void testMinus() {
         Mat4 left = new Mat4(new float[]{
                 0, 888, 102, 2,
@@ -98,31 +102,41 @@ public class Mat4Test extends TestCase {
         assertEquals(resultExp, left.minus(right));
     }
 
+    @Test
     public void testMultiplication() {
-        Mat4 left = new Mat4(new float[]{
+        Mat4 a = new Mat4(new float[]{
                 74, 8, 12, 2,
                 66, -57, 1, -5,
                 -7, -8, 745, 86,
                 -4, 50, 3, 69
         });
 
-        Mat4 right = new Mat4(new float[]{
+        Mat4 b = new Mat4(new float[]{
                 0, -347, 124, 8,
                 -1, 3, 969, -67,
                 0, -9, 0, 8,
                 0, -90, 532, -9
         });
 
-        Mat4 resultExp = new Mat4(new float[]{
+        Mat4 resultExpAB = new Mat4(new float[]{
+                -23802, 19187, 92057, 12951,
+                -6391, -11281, 721695, 78694,
+                -626, 913, 15, 597,
+                -9628, 424, 396223, 45581
+        });
+
+        Mat4 resultExpBA = new Mat4(new float[]{
                 -8, -25942, 17992, 134,
                 57, -22632, -49709, 4400,
                 8, -12040, 37132, 5666,
                 -50, -4699, 84662, -3979
         });
 
-        assertEquals(resultExp, left.multiplication(right));
+        assertEquals(resultExpBA, b.multiplication(a));
+        assertEquals(resultExpAB, a.multiplication(b));
     }
 
+    @Test
     public void testTranspose() {
         Mat4 original = new Mat4(new float[]{
                 1, 2, 3, 4,

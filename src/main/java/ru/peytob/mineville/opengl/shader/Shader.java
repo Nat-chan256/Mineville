@@ -8,7 +8,14 @@ import java.nio.IntBuffer;
 import static org.lwjgl.opengl.GL33.*;
 
 public class Shader {
+    /**
+     * ID inside OpenGL.
+     */
     private final int id;
+
+    /**
+     * Type of shader (from GL33).
+     */
     private final int type;
 
     public Shader(String _code, int _type) throws RuntimeException {
