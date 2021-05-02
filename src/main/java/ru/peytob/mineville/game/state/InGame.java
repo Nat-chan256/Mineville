@@ -15,10 +15,7 @@ import java.nio.file.Path;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.glfwGetKey;
-import static org.lwjgl.opengl.GL33.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL33.glClear;
-import static org.lwjgl.opengl.GL33.GL_FRAGMENT_SHADER;
-import static org.lwjgl.opengl.GL33.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL33.*;
 
 public class InGame extends AbstractState {
     Mesh mesh;
@@ -53,7 +50,7 @@ public class InGame extends AbstractState {
         shader.setProjectionMatrix(Mat4.computeIdentity());
         shader.setViewMatrix(Mat4.computeIdentity());
 
-        mesh = new Mesh(new float[] {
+        mesh = new Mesh(new float[]{
                 0.5f, 0.5f, 0,
                 0, 0, 0,
                 0, 0,
@@ -79,41 +76,42 @@ public class InGame extends AbstractState {
 
     @Override
     public void tick() {
-            if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_W) == GLFW_PRESS) {
-                scale += 0.01;
-            }
+        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_W) == GLFW_PRESS) {
+            scale += 0.01;
+        }
 
-            if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_UP) == GLFW_PRESS) {
-                position.y += 0.01;
-            }
+        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_S) == GLFW_PRESS) {
+            scale -= 0.01;
+        }
 
-            if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_DOWN) == GLFW_PRESS) {
-                position.y -= 0.01;
-            }
+        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_UP) == GLFW_PRESS) {
+            position.y += 0.01;
+        }
 
-            if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_LEFT) == GLFW_PRESS) {
-                position.x -= 0.01;
-            }
+        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_DOWN) == GLFW_PRESS) {
+            position.y -= 0.01;
+        }
 
-            if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_RIGHT) == GLFW_PRESS) {
-                position.x += 0.01;
-            }
+        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_LEFT) == GLFW_PRESS) {
+            position.x -= 0.01;
+        }
 
-            if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_S) == GLFW_PRESS) {
-                scale -= 0.01;
-            }
+        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_RIGHT) == GLFW_PRESS) {
+            position.x += 0.01;
+        }
 
-            if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_A) == GLFW_PRESS) {
-                rotation.z -= 0.1;
-            }
+        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_A) == GLFW_PRESS) {
+            rotation.z -= 0.1;
+        }
 
-            if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_B) == GLFW_PRESS) {
-                rotation.z += 0.1;
-            }
+        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_D) == GLFW_PRESS) {
+            rotation.z += 0.1;
+        }
 
-        Mat4 scaleMat = Mat4.computeScaleMatrix(scale, scale, scale);
-        Mat4 transMat = Mat4.computeTranslation(position.x, position.y, position.z);
-        shader.setModelMatrix(transMat.multiplication(scaleMat));
+        Mat4 result = Mat4.computeScaleMatrix(scale, scale, scale);
+        result = Mat4.computeRotationZ(rotation.z).multiplication(result);
+        result = Mat4.computeTranslation(position.x, position.y, position.z).multiplication(result);
+        shader.setModelMatrix(result);
     }
 
     @Override
