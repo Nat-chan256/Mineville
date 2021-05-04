@@ -50,28 +50,168 @@ public class InGame extends AbstractState {
         shader.setProjectionMatrix(Mat4.computeIdentity());
         shader.setViewMatrix(Mat4.computeIdentity());
 
+        Vec3 _textureCoordinates = new Vec3(0, 0, 0);
+        Vec3 _position = new Vec3(0, 0, 0);
+        Vec3 _tileSizesAbs = new Vec3(0, 0, 0);
+
         mesh = new Mesh(new float[]{
-                0.5f, 0.5f, 0,
-                0, 0, 0,
-                0, 0,
+                _position.x + -0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
 
-                -0.5f, 0, 0,
-                0, 0, 0,
-                0, 0,
+                _position.x + 0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y, // texture
 
-                0.5f, 0, 0,
-                0, 0, 0,
-                0, 0
+                _position.x + 0.5f, _position.y + -0.5f, _position.z + -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + -0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
+
+                _position.x + 0.5f, _position.y + -0.5f, _position.z + -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + -0.5f, _position.y + -0.5f, _position.z + -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + 0.5f, _position.y + -0.5f, _position.z + -0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + 0.5f, _position.y + -0.5f, _position.z + 0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
+
+                _position.x + -0.5f, _position.y + -0.5f, _position.z + 0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y, // texture
+
+                _position.x + 0.5f, _position.y + -0.5f, _position.z + -0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + -0.5f, _position.y + -0.5f, _position.z + 0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y, // texture
+
+                _position.x + -0.5f, _position.y + -0.5f, _position.z + -0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + 0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
+
+                _position.x + 0.5f, _position.y + 0.5f, _position.z + 0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y, // texture
+
+                _position.x + 0.5f, _position.y + -0.5f, _position.z + 0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + 0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
+
+                _position.x + 0.5f, _position.y + -0.5f, _position.z + 0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + 0.5f, _position.y + -0.5f, _position.z + -0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + -0.5f, _position.y + 0.5f, _position.z + 0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
+
+                _position.x + -0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y, // texture
+
+                _position.x + -0.5f, _position.y + -0.5f, _position.z + -0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + -0.5f, _position.y + 0.5f, _position.z + 0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
+
+                _position.x + -0.5f, _position.y + -0.5f, _position.z + -0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + -0.5f, _position.y + -0.5f, _position.z + 0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + 0.5f, _position.y + 0.5f, _position.z + 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
+
+                _position.x + -0.5f, _position.y + 0.5f, _position.z + 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y, // texture
+
+                _position.x + -0.5f, _position.y + -0.5f, _position.z + 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + 0.5f, _position.y + 0.5f, _position.z + 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
+
+                _position.x + -0.5f, _position.y + -0.5f, _position.z + 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + 0.5f, _position.y + -0.5f, _position.z + 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + -0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + -0.5f, _position.y + 0.5f, _position.z + 0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y, // texture
+
+                _position.x + 0.5f, _position.y + 0.5f, _position.z + 0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y, // texture
+
+                _position.x + -0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                _textureCoordinates.x + _tileSizesAbs.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
+                _position.x + 0.5f, _position.y + 0.5f, _position.z + 0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y, // texture
+
+                _position.x + 0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
+
         });
 
         scale = 1.0f;
         position = new Vec3(0, 0, 0);
         rotation = new Vec3(0, 0, 0);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        glDepthMask(true);
     }
 
     @Override
     public void clear() {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     @Override
@@ -110,6 +250,7 @@ public class InGame extends AbstractState {
 
         Mat4 result = Mat4.computeScaleMatrix(scale, scale, scale);
         result = Mat4.computeRotationZ(rotation.z).multiplication(result);
+        result = Mat4.computeRotationY(1.5f).multiplication(result);
         result = Mat4.computeTranslation(position.x, position.y, position.z).multiplication(result);
         shader.setModelMatrix(result);
     }

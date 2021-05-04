@@ -4,12 +4,12 @@ uniform sampler2D ut_diffuseAtlas;
 
 in VS_OUT
 {
-    vec2 texture;
+    vec3 texture;
 } VSO;
 
 out vec4 fsout_color;
 
 void main()
 {
-    fsout_color = vec4(1, 1, 1, 0);
+    fsout_color = vec4(VSO.texture, 0);
 }

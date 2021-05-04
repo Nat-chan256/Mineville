@@ -379,4 +379,74 @@ public final class Mat4 {
     static public Mat4 computeRotation(float _angle, Vec3 _vec3) {
         return computeRotation(_angle, _vec3.x, _vec3.y, _vec3.z);
     }
+
+    /**
+     * Returns transposed view matrix.
+     *
+     * @param _position Camera position.
+     * @param _target Point at camera front vector.
+     * @param _up Up vector.
+     * @return New instance of transposed view matrix.
+     */
+    static public Mat4 computeLookAt(Vec3 _position, Vec3 _target, Vec3 _up) {
+        Vec3 zAxis = _position.minus(_target);
+        zAxis = zAxis.normalize();
+
+        Vec3 upNormalize = _up.normalize();
+        Vec3 crossUpAndZ = upNormalize.vectorMultiplication(zAxis);
+        Vec3 xAxis = crossUpAndZ.normalize();
+
+        Vec3 yAxis = zAxis.vectorMultiplication(xAxis);
+
+        Mat4 translation = Mat4.computeTranslation(_position.negative());
+
+        Mat4 rotation = Mat4.computeIdentity();
+        rotation.set(0, 0, xAxis.x);
+        rotation.set(1, 0, xAxis.y);
+        rotation.set(2, 0, xAxis.z);
+
+        rotation.set(0, 1, yAxis.x);
+        rotation.set(1, 1, yAxis.y);
+        rotation.set(2, 1, yAxis.z);
+
+        rotation.set(0, 2, zAxis.x);
+        rotation.set(1, 2, zAxis.y);
+        rotation.set(2, 2, zAxis.z);
+
+        return rotation.multiplication(translation);
+    }
+
+    /**
+     * Alias for computeLookAt(positionVec3, targetVec3, upVec3).
+     *
+     * @param posx X component of position vector.
+     * @param posy Y component of position vector.
+     * @param posz Z component of position vector.
+     * @param tarx X component of target vector.
+     * @param tary Y component of target vector.
+     * @param tarz Z component of target vector.
+     * @param upx X component of up vector.
+     * @param upy Y component of up vector.
+     * @param upz Z component of up vector.
+     * @return New instance of transposed perspective matrix.
+     */
+    static public Mat4 computeLookAt(float posx, float posy, float posz, float tarx, float tary, float tarz,
+                                     float upx, float upy, float upz) {
+        return computeLookAt(new Vec3(posx, posy, posz), new Vec3(tarx, tary, tarz), new Vec3(upx, upy, upz));
+    }
+
+    static public Mat4 computePerspective(float _fov, float _aspect, float _nearPlane, float _farPlane) {
+        float zp = _farPlane + _nearPlane;
+        float zm = _farPlane - _nearPlane;
+
+        Mat4 perspective = new Mat4();
+        perspective.set(1, 1, 1.0f / (float) Math.tan(_fov / 2)); // y_scale
+        perspective.set(0, 0, perspective.get(1, 1) / _aspect); // x_scale = y_scale / aspect
+        perspective.set(2, 2, -zp / zm);
+
+        perspective.set(3, 2, -(2 * _farPlane * _nearPlane) / zm);
+        perspective.set(2, 3, -1.0f);
+
+        return perspective;
+    }
 }

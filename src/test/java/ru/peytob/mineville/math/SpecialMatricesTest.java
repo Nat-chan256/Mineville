@@ -107,4 +107,36 @@ public class SpecialMatricesTest {
         float angle = (float) Math.PI / 3.0f * 5.0f;
         assertEquals(expected, Mat4.computeRotation(angle, 0.662f, 0.2f, 0.722f));
     }
+
+    @Test
+    public void perspectiveTest() {
+        float[] expectedData = new float[]{
+                0.46039617f, 0, 0, 0,
+                0, 0.76732695f, 0, 0,
+                0, 0, -1.002002f, -1,
+                0, 0, -0.2002002f, 0
+        };
+
+        Mat4 expected = new Mat4(expectedData);
+
+        float fov = (float) Math.toRadians(105.0);
+        assertEquals(expected, Mat4.computePerspective(fov, 5.0f / 3.0f, 0.1f, 100.0f));
+    }
+
+    @Test
+    public void lookAtTest() {
+        float[] expectedData = new float[]{
+                -0.9783499f, -0.13016832f, -0.1608963f, 0,
+                0, 0.7774364f, -0.62896156f, 0,
+                0.2069575f, -0.6153445f, -0.76060486f, 0,
+                42.18349f, 13.739656f, 57.685097f, 1,
+        };
+
+        Mat4 expected = new Mat4(expectedData);
+
+        Vec3 front = new Vec3(0.160897f, 0.628962f, 0.760605f);
+        Vec3 position = new Vec3(52.34f, 25.6f, 43.6f);
+
+        assertEquals(expected, Mat4.computeLookAt(position, position.plus(front), new Vec3(0.0f, 1.0f, 0.0f)));
+    }
 }

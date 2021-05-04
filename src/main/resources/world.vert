@@ -10,11 +10,15 @@ uniform mat4 u_model;
 
 out VS_OUT
 {
-    vec2 texture;
+    vec3 texture;
 } VSO;
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 
 void main()
 {
     gl_Position = u_projection * u_view * u_model * vec4(l_position, 1.0);
-    VSO.texture = l_texture; // Для красоты на время :З
+    VSO.texture = vec3(rand(vec2(l_position.xy)), rand(l_position.yz), rand(vec2(l_position.xz))); // Для красоты на время :З
 }
