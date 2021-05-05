@@ -5,13 +5,8 @@ import ru.peytob.mineville.game.main.Game;
 import ru.peytob.mineville.graphic.Mesh;
 import ru.peytob.mineville.math.Mat4;
 import ru.peytob.mineville.math.Vec3;
-import ru.peytob.mineville.opengl.shader.Shader;
 import ru.peytob.mineville.opengl.shader.WorldShader;
 import ru.peytob.mineville.system.WindowCallbackSet;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.glfwGetKey;
@@ -24,31 +19,8 @@ public class InGame extends AbstractState {
     Vec3 position;
     Vec3 rotation;
 
-    private WorldShader shader;
-
     public InGame(Game _game) {
         super(_game);
-
-        Shader vertexShader;
-        Shader fragmentShader;
-        try {
-            vertexShader = new Shader(Files.readString(Path.of("src/main/resources/world.vert")), GL_VERTEX_SHADER);
-            fragmentShader = new Shader(Files.readString(Path.of("src/main/resources/world.frag")), GL_FRAGMENT_SHADER);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        shader = new WorldShader();
-        shader.attachShader(vertexShader);
-        vertexShader.destroy();
-        shader.attachShader(fragmentShader);
-        fragmentShader.destroy();
-        shader.link();
-        shader.use();
-        shader.setModelMatrix(Mat4.computeIdentity());
-        shader.setProjectionMatrix(Mat4.computeIdentity());
-        shader.setViewMatrix(Mat4.computeIdentity());
 
         Vec3 _textureCoordinates = new Vec3(0, 0, 0);
         Vec3 _position = new Vec3(0, 0, 0);
@@ -198,7 +170,6 @@ public class InGame extends AbstractState {
                 _position.x + 0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
                 0.0f, 1.0f, 0.0f, // normal
                 _textureCoordinates.x, _textureCoordinates.y + _tileSizesAbs.y, // texture
-
         });
 
         scale = 1.0f;
@@ -252,11 +223,12 @@ public class InGame extends AbstractState {
         result = Mat4.computeRotationZ(rotation.z).multiplication(result);
         result = Mat4.computeRotationY(1.5f).multiplication(result);
         result = Mat4.computeTranslation(position.x, position.y, position.z).multiplication(result);
-        shader.setModelMatrix(result);
+        game.getShaderPack().getWorldShader().setModelMatrix(result);
     }
 
     @Override
     public void draw() {
+        game.getShaderPack().getWorldShader().use();
         mesh.draw();
     }
 
