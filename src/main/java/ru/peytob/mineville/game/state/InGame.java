@@ -2,22 +2,27 @@ package ru.peytob.mineville.game.state;
 
 import org.lwjgl.glfw.GLFW;
 import ru.peytob.mineville.game.main.Game;
+import ru.peytob.mineville.graphic.Camera;
 import ru.peytob.mineville.graphic.Mesh;
 import ru.peytob.mineville.math.Mat4;
+import ru.peytob.mineville.math.Vec2;
 import ru.peytob.mineville.math.Vec3;
 import ru.peytob.mineville.opengl.shader.WorldShader;
+import ru.peytob.mineville.system.Window;
 import ru.peytob.mineville.system.WindowCallbackSet;
 
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFW.glfwGetKey;
 import static org.lwjgl.opengl.GL33.*;
 
 public class InGame extends AbstractState {
     Mesh mesh;
 
+    Camera camera;
+
     float scale;
-    Vec3 position;
-    Vec3 rotation;
+
+    Vec2 cursorPosition;
 
     public InGame(Game _game) {
         super(_game);
@@ -25,6 +30,11 @@ public class InGame extends AbstractState {
         Vec3 _textureCoordinates = new Vec3(0, 0, 0);
         Vec3 _position = new Vec3(0, 0, 0);
         Vec3 _tileSizesAbs = new Vec3(0, 0, 0);
+
+        cursorPosition = game.getWindow().getCursorPosition();
+
+        camera = new Camera(new Vec3(0, 0, -10 ), 0,  (float) Math.toRadians(90),
+                (float) Math.toRadians(75), 800.0f / 600.0f);
 
         mesh = new Mesh(new float[]{
                 _position.x + -0.5f, _position.y + 0.5f, _position.z + -0.5f, // position
@@ -173,8 +183,8 @@ public class InGame extends AbstractState {
         });
 
         scale = 1.0f;
-        position = new Vec3(0, 0, 0);
-        rotation = new Vec3(0, 0, 0);
+        game.getShaderPack().getWorldShader().setProjectionMatrix(camera.computeProjection());
+
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
         glDepthMask(true);
@@ -182,48 +192,35 @@ public class InGame extends AbstractState {
 
     @Override
     public void clear() {
+        glClearColor(0.0f, 0.5f, 0.5f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     @Override
     public void tick() {
-        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_W) == GLFW_PRESS) {
-            scale += 0.01;
-        }
+        Vec3 position = camera.getPosition();
+        Window window = game.getWindow();
 
-        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_S) == GLFW_PRESS) {
-            scale -= 0.01;
-        }
+        float speed = 0.15f;
+        Vec3 cameraOffset = new Vec3(0 ,0, 0);
+        if (glfwGetKey(window.getPointer(), GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window.getPointer(), GLFW_KEY_W) == GLFW_PRESS)
+            cameraOffset = cameraOffset.plus(camera.getFront().multiplication(speed));
 
-        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_UP) == GLFW_PRESS) {
-            position.y += 0.01;
-        }
+        if (glfwGetKey(window.getPointer(), GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(window.getPointer(), GLFW_KEY_S) == GLFW_PRESS)
+            cameraOffset = cameraOffset.minus(camera.getFront().multiplication(speed));
 
-        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_DOWN) == GLFW_PRESS) {
-            position.y -= 0.01;
-        }
+        if (glfwGetKey(window.getPointer(), GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window.getPointer(), GLFW_KEY_A) == GLFW_PRESS)
+            cameraOffset = cameraOffset.minus(camera.getRight().multiplication(speed));
 
-        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_LEFT) == GLFW_PRESS) {
-            position.x -= 0.01;
-        }
+        if (glfwGetKey(window.getPointer(), GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window.getPointer(), GLFW_KEY_D) == GLFW_PRESS)
+            cameraOffset = cameraOffset.plus(camera.getRight().multiplication(speed));
 
-        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_RIGHT) == GLFW_PRESS) {
-            position.x += 0.01;
-        }
-
-        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_A) == GLFW_PRESS) {
-            rotation.z -= 0.1;
-        }
-
-        if (glfwGetKey(game.getWindow().getPointer(), GLFW.GLFW_KEY_D) == GLFW_PRESS) {
-            rotation.z += 0.1;
-        }
+        camera.move(cameraOffset);
 
         Mat4 result = Mat4.computeScaleMatrix(scale, scale, scale);
-        result = Mat4.computeRotationZ(rotation.z).multiplication(result);
-        result = Mat4.computeRotationY(1.5f).multiplication(result);
-        result = Mat4.computeTranslation(position.x, position.y, position.z).multiplication(result);
+
         game.getShaderPack().getWorldShader().setModelMatrix(result);
+        game.getShaderPack().getWorldShader().setViewMatrix(camera.computeView());
     }
 
     @Override
@@ -241,11 +238,21 @@ public class InGame extends AbstractState {
     public void onLoad() {
         System.out.println("InGame: load");
         WindowCallbackSet cbs = new WindowCallbackSet();
+
         cbs.setKeyCallback((window, key, scan, action, mods) -> {
             if (key == GLFW.GLFW_KEY_Q) {
                 game.stop();
             }
         });
+
+        cbs.setMouseMovingCallback((window, dx, dy) -> {
+            camera.lookAround((float) (dx - cursorPosition.x) * 0.1f,
+                    (float) -(dy - cursorPosition.y) * 0.1f);
+
+            cursorPosition.x = (float) dx;
+            cursorPosition.y = (float) dy;
+        });
+
         cbs.use(game.getWindow());
     }
 }

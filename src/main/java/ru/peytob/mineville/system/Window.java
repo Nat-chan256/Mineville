@@ -3,7 +3,9 @@ package ru.peytob.mineville.system;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.system.MemoryStack;
+import ru.peytob.mineville.math.Vec2;
 
+import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -93,5 +95,19 @@ public class Window {
      */
     public long getPointer() {
         return pointer;
+    }
+
+    /**
+     * Returns cursor position relative to the content area.
+     * @return Cursor position relative to the content area.
+     */
+    public Vec2 getCursorPosition() {
+        try (MemoryStack stack = MemoryStack.stackPush())
+        {
+            final DoubleBuffer width = stack.mallocDouble(1);
+            final DoubleBuffer height = stack.mallocDouble(1);
+            glfwGetCursorPos(pointer, width, height);
+            return new Vec2((float) width.get(0), (float) height.get(0));
+        }
     }
 }
