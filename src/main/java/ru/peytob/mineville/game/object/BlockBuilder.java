@@ -1,9 +1,12 @@
 package ru.peytob.mineville.game.object;
 
+import ru.peytob.mineville.graphic.Mesh;
+
 public class BlockBuilder {
     private String textId;
     private Short id;
     private String name;
+    private Mesh mesh;
 
     public BlockBuilder() {
     }
@@ -30,5 +33,13 @@ public class BlockBuilder {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Mesh getMesh() {
+        return mesh;
+    }
+
+    public void setMesh(Mesh mesh) {
+        this.mesh = mesh;
     }
 }

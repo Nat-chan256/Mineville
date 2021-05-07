@@ -17,6 +17,7 @@ public class WorldShader extends AbstractShaderProgram {
     protected void searchUniforms() throws RuntimeException {
         final String modelMatrix = "u_model";
         modelMatrixLocation = glGetUniformLocation(id, modelMatrix);
+        System.out.println(modelMatrixLocation);
         if (modelMatrixLocation == -1) {
             throw new RuntimeException("Uniform " + modelMatrix + " not found.");
         }
