@@ -33,8 +33,11 @@ public class InGame extends AbstractState {
         cursorPosition = game.getWindow().getCursorPosition();
 
         octree = new Octree(new Vec3i());
-        octree.setBlock(new Vec3i(2, 2, 2), BlockRegistry.getInstance().get((short) 0));
-        octree.setBlock(new Vec3i(1, 1, 1), BlockRegistry.getInstance().get((short) 0));
+        octree.setBlock(new Vec3i(2, 2, 2), BlockRegistry.getInstance().get((short) 1));
+        octree.setBlock(new Vec3i(1, 1, 1), BlockRegistry.getInstance().get((short) 1));
+
+        System.out.println(octree.getBlock(new Vec3i(0, 0, 0)).getId());
+        System.out.println(octree.getBlock(new Vec3i(1, 1, 1)).getId());
 
         camera = new Camera(new Vec3(0, 0, -10 ), 0,  (float) Math.toRadians(90),
                 (float) Math.toRadians(75), 800.0f / 600.0f);

@@ -160,6 +160,13 @@ public class BlockRegistry extends AbstractRegistry<Block> {
         airBuilder.setName("Air");
         airBuilder.setMesh(cubeMesh);
 
+        BlockBuilder grassBuilder = new BlockBuilder();
+        grassBuilder.setId((short) 1);
+        grassBuilder.setTextId("grass");
+        grassBuilder.setName("Grass");
+        grassBuilder.setMesh(cubeMesh);
+
+        new RegistryModifier().add(new Block(grassBuilder));
         new RegistryModifier().add(new Block(airBuilder));
     }
 
