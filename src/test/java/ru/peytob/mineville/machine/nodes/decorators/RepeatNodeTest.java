@@ -3,6 +3,7 @@ package ru.peytob.mineville.machine.nodes.decorators;
 import org.junit.Assert;
 import org.junit.Test;
 import ru.peytob.mineville.machine.BehaviorTree;
+import ru.peytob.mineville.machine.nodes.ChildException;
 import ru.peytob.mineville.machine.nodes.LeafNode;
 import ru.peytob.mineville.machine.nodes.Node;
 
@@ -31,7 +32,7 @@ public class RepeatNodeTest {
             try {
                 root.addChild(new EmptyLeafNode(context));
             }
-            catch(Node.ChildException ex)
+            catch(ChildException ex)
             {}
         }
 

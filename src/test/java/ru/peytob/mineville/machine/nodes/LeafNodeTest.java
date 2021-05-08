@@ -50,7 +50,7 @@ public class LeafNodeTest {
             try {
                 return root.tick();
             }
-            catch(Node.ChildException ex)
+            catch(ChildException ex)
             {
                 state = Node.NodeState.ERROR;
                 return state;

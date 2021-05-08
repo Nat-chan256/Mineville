@@ -1,6 +1,7 @@
 package ru.peytob.mineville.machine.nodes.decorators;
 
 import ru.peytob.mineville.machine.BehaviorTree.Context;
+import ru.peytob.mineville.machine.nodes.ChildException;
 
 /**
  * Inverter node class.

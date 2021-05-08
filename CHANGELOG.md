@@ -1,3 +1,9 @@
+## 080521
+
++ Added mas package.
++ Added Agent, Desire and Ontology classes.
++ Wrote test for Agent proactivity.
+
 ## 290421
 
 + Wrote tests for BehaviorTree class.

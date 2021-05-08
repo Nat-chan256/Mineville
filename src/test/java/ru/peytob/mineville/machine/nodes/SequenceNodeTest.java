@@ -46,7 +46,7 @@ public class SequenceNodeTest
                root.addChild(new CutSausagePieceNode(context));
                root.addChild(new PutSausageOnBreadNode(context));
            }
-           catch(Node.ChildException ex)
+           catch(ChildException ex)
            {}
 
            context.setVariable("hasBread", true);

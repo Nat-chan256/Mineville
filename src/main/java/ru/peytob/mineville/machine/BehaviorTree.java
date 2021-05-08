@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ru.peytob.mineville.machine.nodes.Node.NodeState;
-import ru.peytob.mineville.machine.nodes.Node.ChildException;
+import ru.peytob.mineville.machine.nodes.ChildException;
 import ru.peytob.mineville.machine.nodes.Node;
 
 /**
@@ -30,6 +30,7 @@ public abstract class BehaviorTree implements IBehaviorTree {
      */
     public BehaviorTree() {
         context = new Context();
+        state = NodeState.READY;
     }
 
     /**
@@ -46,7 +47,8 @@ public abstract class BehaviorTree implements IBehaviorTree {
      */
     public NodeState tick() {
         try {
-            return root.tick();
+            state = root.tick();
+            return state;
         } catch (ChildException ex) {
             return NodeState.ERROR;
         }

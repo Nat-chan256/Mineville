@@ -22,7 +22,7 @@ public class SelectorNodeTest
                 root.addChild(new HasKeyNode(context));
                 root.addChild(new CanBreakDownDoor(context));
             }
-            catch(Node.ChildException ex)
+            catch(ChildException ex)
             {
 
             }
@@ -65,7 +65,7 @@ public class SelectorNodeTest
             try {
                 return root.tick();
             }
-            catch(Node.ChildException ex)
+            catch(ChildException ex)
             {
                 state = Node.NodeState.ERROR;
                 return state;

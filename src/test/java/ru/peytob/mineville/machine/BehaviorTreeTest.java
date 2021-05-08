@@ -3,10 +3,7 @@ package ru.peytob.mineville.machine;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ru.peytob.mineville.machine.nodes.LeafNode;
-import ru.peytob.mineville.machine.nodes.Node;
-import ru.peytob.mineville.machine.nodes.SelectorNode;
-import ru.peytob.mineville.machine.nodes.SequenceNode;
+import ru.peytob.mineville.machine.nodes.*;
 import ru.peytob.mineville.machine.nodes.decorators.InverterNode;
 import ru.peytob.mineville.machine.nodes.decorators.LimitNode;
 import ru.peytob.mineville.machine.nodes.decorators.RepeatNode;
@@ -92,7 +89,7 @@ public class BehaviorTreeTest {
                 root.addChild(sequenceNode);
                 root.addChild(selectorNode);
             }
-            catch(Node.ChildException ex)
+            catch(ChildException ex)
             {
                 System.out.println(ex.getMessage());
             }

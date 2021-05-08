@@ -23,14 +23,15 @@ public abstract class LeafNode extends Node {
      */
     @Override
     public NodeState tick() {
-        try {
-            if (state == NodeState.READY) {
-                state = NodeState.RUNNING;
-            }
-            return state;
-        } finally {
-            performTask();
+        if (state == NodeState.READY) {
+            state = NodeState.RUNNING;
         }
+        else if(state != NodeState.RUNNING)
+        {
+            return state;
+        }
+        new Thread(() -> performTask()).start();
+        return state;
     }
 
     /**
