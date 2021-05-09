@@ -1,6 +1,10 @@
 package ru.peytob.mineville.game.main;
 
+import ru.peytob.mineville.game.object.Block;
+import ru.peytob.mineville.game.object.BlockBuilder;
+import ru.peytob.mineville.game.registry.BlockRegistry;
 import ru.peytob.mineville.game.state.InGame;
+import ru.peytob.mineville.graphic.BlockModel;
 import ru.peytob.mineville.graphic.ShaderPack;
 import ru.peytob.mineville.math.Mat4;
 import ru.peytob.mineville.opengl.shader.Shader;
@@ -73,6 +77,172 @@ public class Application {
     }
 
     public static void loadBlocks() {
+        // todo Create block loader.
 
+        float[] northSide = new float[] {
+                0.5f, 0.5f, 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, 0.5f, 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, -0.5f, 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, 0.5f, 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, -0.5f, 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, -0.5f, 0.5f, // position
+                0.0f, 0.0f, 1.0f, // normal
+                0.0f, 0.0f, // texture
+        };
+
+        float[] southSide = new float[] {
+                -0.5f, 0.5f, -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, 0.5f, -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, -0.5f, -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, 0.5f, -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, -0.5f, -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, -0.5f, -0.5f, // position
+                0.0f, 0.0f, -1.0f, // normal
+                0.0f, 0.0f, // texture
+        };
+
+        float[] westSide = new float[] {
+                -0.5f, 0.5f, 0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, 0.5f, -0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, -0.5f, -0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, 0.5f, 0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, -0.5f, -0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, -0.5f, 0.5f, // position
+                -1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+        };
+
+        float[] eastSide = new float[] {
+                0.5f, 0.5f, -0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, 0.5f, 0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, -0.5f, 0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, 0.5f, -0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, -0.5f, 0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, -0.5f, -0.5f, // position
+                1.0f, 0.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+        };
+
+        float[] topSide = new float[] {
+                -0.5f, 0.5f, -0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, 0.5f, 0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, 0.5f, 0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, 0.5f, -0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, 0.5f, 0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, 0.5f, -0.5f, // position
+                0.0f, 1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+        };
+
+        float[] bottomSide = new float[] {
+                0.5f, -0.5f, -0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, -0.5f, 0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, -0.5f, 0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                0.5f, -0.5f, -0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, -0.5f, 0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+
+                -0.5f, -0.5f, -0.5f, // position
+                0.0f, -1.0f, 0.0f, // normal
+                0.0f, 0.0f, // texture
+        };
+
+        BlockModel model = new BlockModel(northSide, southSide, westSide, eastSide, topSide, bottomSide);
+
+        BlockBuilder grassBuilder = new BlockBuilder();
+        grassBuilder.setId((short) 1);
+        grassBuilder.setTextId("grass");
+        grassBuilder.setName("Grass");
+        grassBuilder.setModel(model);
+
+        BlockRegistry.getInstance().getRegistryModifier().add(new Block(grassBuilder));
     }
 }

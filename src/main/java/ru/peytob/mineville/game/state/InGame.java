@@ -31,13 +31,15 @@ public class InGame extends AbstractState {
         cursorPosition = game.getWindow().getCursorPosition();
 
         octree = new Octree(new Vec3i());
-        octree.setBlock(new Vec3i(2, 2, 2), BlockRegistry.getInstance().get((short) 1));
-        octree.setBlock(new Vec3i(1, 1, 1), BlockRegistry.getInstance().get((short) 1));
+        for (int i = 0; i < 1; ++i) {
+            octree.setBlock(new Vec3i(i, i, i), BlockRegistry.getInstance().get((short) 1));
+        }
 
         camera = new Camera(new Vec3(0, 0, -10 ), 0,  (float) Math.toRadians(90),
                 (float) Math.toRadians(75), 800.0f / 600.0f);
 
         game.getShaderPack().getWorldShader().setProjectionMatrix(camera.computeProjection());
+        game.getShaderPack().getWorldShader().setViewMatrix(camera.computeView());
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
@@ -68,8 +70,11 @@ public class InGame extends AbstractState {
         if (glfwGetKey(window.getPointer(), GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window.getPointer(), GLFW_KEY_D) == GLFW_PRESS)
             cameraOffset = cameraOffset.plus(camera.getRight().multiplication(speed));
 
-        camera.move(cameraOffset);
-        game.getShaderPack().getWorldShader().setViewMatrix(camera.computeView());
+        if (!cameraOffset.equals(new Vec3())) {
+            camera.move(cameraOffset);
+            game.getShaderPack().getWorldShader().setViewMatrix(camera.computeView());
+            System.out.println(camera.getPosition());
+        }
     }
 
     @Override
@@ -97,6 +102,8 @@ public class InGame extends AbstractState {
         cbs.setMouseMovingCallback((window, dx, dy) -> {
             camera.lookAround((float) (dx - cursorPosition.x) * 0.1f,
                     (float) -(dy - cursorPosition.y) * 0.1f);
+
+            game.getShaderPack().getWorldShader().setViewMatrix(camera.computeView());
 
             cursorPosition.x = (float) dx;
             cursorPosition.y = (float) dy;

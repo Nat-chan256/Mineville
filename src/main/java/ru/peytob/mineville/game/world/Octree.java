@@ -2,6 +2,7 @@ package ru.peytob.mineville.game.world;
 
 import ru.peytob.mineville.game.object.Block;
 import ru.peytob.mineville.game.registry.BlockRegistry;
+import ru.peytob.mineville.graphic.Mesh;
 import ru.peytob.mineville.math.CoordinatesUtils;
 import ru.peytob.mineville.math.Mat4;
 import ru.peytob.mineville.math.Vec3i;
@@ -19,7 +20,7 @@ public class Octree {
     }
 
     public Octree(Vec3i position) {
-        this(position, 4);
+        this(position, 16);
     }
 
     public Vec3i getPosition() {
@@ -31,7 +32,7 @@ public class Octree {
     }
 
     public boolean setBlock(Vec3i _position, Block _block) {
-        if (_block.getId() == 0) {
+        if (_block == null || _block.getId() == 0) {
             return deleteBlock(_position);
         }
 
@@ -84,19 +85,19 @@ public class Octree {
         public InnerNode(Vec3i position, int sizes) {
             super(position, sizes);
 
-            childNodes = (sizes == 1) ? new LeafNode[8] : new InnerNode[8];
+            childNodes = (sizes == 2) ? new LeafNode[8] : new InnerNode[8];
         }
 
         @Override
         boolean setBlock(Vec3i _position, Block _block) {
-            int half = sizes - 1;
+            int half = sizes / 2;
             Vec3i innerPosition = OctreeUtils.toInnerCoordinates(_position, half);
             Vec3i arrayCoordinates = OctreeUtils.toArrayCoordinates(_position, half);
             int arrayIndex = CoordinatesUtils.convert3dTo1d(arrayCoordinates, 2, 2);
 
             if (childNodes[arrayIndex] == null) {
                 Vec3i newPos = position.plus(arrayCoordinates.multiplication(half));
-                childNodes[arrayIndex] = (half == 0) ? new LeafNode(newPos, null) : new InnerNode(newPos, half);
+                childNodes[arrayIndex] = (half == 1) ? new LeafNode(newPos, null) : new InnerNode(newPos, half);
             }
 
             return childNodes[arrayIndex].setBlock(innerPosition, _block);
@@ -104,7 +105,7 @@ public class Octree {
 
         @Override
         Block getBlock(Vec3i _position) {
-            int half = sizes - 1;
+            int half = sizes / 2;
             Vec3i innerPosition = OctreeUtils.toInnerCoordinates(_position, half);
             Vec3i arrayCoordinates = OctreeUtils.toArrayCoordinates(_position, half);
             int arrayIndex = CoordinatesUtils.convert3dTo1d(arrayCoordinates, 2, 2);
@@ -118,7 +119,7 @@ public class Octree {
 
         @Override
         boolean deleteBlock(Vec3i _position) {
-            int half = sizes - 1;
+            int half = sizes / 2;
             Vec3i innerPosition = OctreeUtils.toInnerCoordinates(_position, half);
             Vec3i arrayCoordinates = OctreeUtils.toArrayCoordinates(_position, half);
             int arrayIndex = CoordinatesUtils.convert3dTo1d(arrayCoordinates, 2, 2);
@@ -139,13 +140,15 @@ public class Octree {
 
         @Override
         int getBlocksInsideCount() {
-            int result = 0;
+            int count = 0;
+
             for (AbstractNode node : childNodes) {
                 if (node != null) {
-                    result += node.getBlocksInsideCount();
+                    count += node.getBlocksInsideCount();
                 }
             }
-            return result;
+
+            return count;
         }
 
         @Override
@@ -201,7 +204,31 @@ public class Octree {
             Mat4 result = Mat4.computeTranslation(position.toVec3());
             glUniformMatrix4fv(0, false, result.toFloatArray());
 
-            data.getMesh().draw();
+            Mesh mesh;
+
+            mesh = new Mesh(data.getModel().getBottomSide());
+            mesh.draw();
+            mesh.destroy();
+
+            mesh = new Mesh(data.getModel().getTopSide());
+            mesh.draw();
+            mesh.destroy();
+
+            mesh = new Mesh(data.getModel().getSouthSide());
+            mesh.draw();
+            mesh.destroy();
+
+            mesh = new Mesh(data.getModel().getNorthSide());
+            mesh.draw();
+            mesh.destroy();
+
+            mesh = new Mesh(data.getModel().getEastSide());
+            mesh.draw();
+            mesh.destroy();
+
+            mesh = new Mesh(data.getModel().getWestSide());
+            mesh.draw();
+            mesh.destroy();
         }
     }
 
@@ -210,19 +237,18 @@ public class Octree {
         static Vec3i toArrayCoordinates(Vec3i _coordinates, int _halfSizes)
         {
             // При верно заданных координатах (все от 0 до halfSizes * 2) компоненты принимают значения от 0 до 1
-            int x = _coordinates.x >> _halfSizes;
-            int y = _coordinates.y >> _halfSizes;
-            int z = _coordinates.z >> _halfSizes;
+            int x = _coordinates.x / _halfSizes;
+            int y = _coordinates.y / _halfSizes;
+            int z = _coordinates.z / _halfSizes;
 
             return new Vec3i(x, y, z);
         }
 
         static Vec3i toInnerCoordinates(Vec3i _coordinates, int _halfSizes)
         {
-            int twoPower = (1 << _halfSizes) - 1;
-            int x = _coordinates.x & twoPower;
-            int y = _coordinates.y & twoPower;
-            int z = _coordinates.z & twoPower;
+            int x = _coordinates.x % _halfSizes;
+            int y = _coordinates.y % _halfSizes;
+            int z = _coordinates.z % _halfSizes;
 
             return new Vec3i(x, y, z);
         }
