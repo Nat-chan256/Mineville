@@ -44,7 +44,7 @@ public class AgentsPropertiesTest {
                 peopleSimulator.getCurrentCoordinates(),
                 ontology.getLostPeopleCoords(),
                 delta
-                ));
+        ));
     }
 
     /**
