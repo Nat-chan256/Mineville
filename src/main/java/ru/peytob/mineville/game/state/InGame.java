@@ -21,8 +21,6 @@ import static org.lwjgl.opengl.GL33.*;
 public class InGame extends AbstractState {
     Camera camera;
 
-    float scale;
-
     Vec2 cursorPosition;
 
     Octree octree;
@@ -36,13 +34,9 @@ public class InGame extends AbstractState {
         octree.setBlock(new Vec3i(2, 2, 2), BlockRegistry.getInstance().get((short) 1));
         octree.setBlock(new Vec3i(1, 1, 1), BlockRegistry.getInstance().get((short) 1));
 
-        System.out.println(octree.getBlock(new Vec3i(0, 0, 0)).getId());
-        System.out.println(octree.getBlock(new Vec3i(1, 1, 1)).getId());
-
         camera = new Camera(new Vec3(0, 0, -10 ), 0,  (float) Math.toRadians(90),
                 (float) Math.toRadians(75), 800.0f / 600.0f);
 
-        scale = 1.0f;
         game.getShaderPack().getWorldShader().setProjectionMatrix(camera.computeProjection());
 
         glEnable(GL_DEPTH_TEST);

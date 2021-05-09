@@ -84,19 +84,19 @@ public class Octree {
         public InnerNode(Vec3i position, int sizes) {
             super(position, sizes);
 
-            childNodes = (sizes == 2) ? new LeafNode[8] : new InnerNode[8];
+            childNodes = (sizes == 1) ? new LeafNode[8] : new InnerNode[8];
         }
 
         @Override
         boolean setBlock(Vec3i _position, Block _block) {
-            int half = sizes / 2;
+            int half = sizes - 1;
             Vec3i innerPosition = OctreeUtils.toInnerCoordinates(_position, half);
             Vec3i arrayCoordinates = OctreeUtils.toArrayCoordinates(_position, half);
             int arrayIndex = CoordinatesUtils.convert3dTo1d(arrayCoordinates, 2, 2);
 
             if (childNodes[arrayIndex] == null) {
                 Vec3i newPos = position.plus(arrayCoordinates.multiplication(half));
-                childNodes[arrayIndex] = (half == 1) ? new LeafNode(newPos, null) : new InnerNode(newPos, half);
+                childNodes[arrayIndex] = (half == 0) ? new LeafNode(newPos, null) : new InnerNode(newPos, half);
             }
 
             return childNodes[arrayIndex].setBlock(innerPosition, _block);
@@ -104,7 +104,7 @@ public class Octree {
 
         @Override
         Block getBlock(Vec3i _position) {
-            int half = sizes / 2;
+            int half = sizes - 1;
             Vec3i innerPosition = OctreeUtils.toInnerCoordinates(_position, half);
             Vec3i arrayCoordinates = OctreeUtils.toArrayCoordinates(_position, half);
             int arrayIndex = CoordinatesUtils.convert3dTo1d(arrayCoordinates, 2, 2);
@@ -118,7 +118,7 @@ public class Octree {
 
         @Override
         boolean deleteBlock(Vec3i _position) {
-            int half = sizes / 2;
+            int half = sizes - 1;
             Vec3i innerPosition = OctreeUtils.toInnerCoordinates(_position, half);
             Vec3i arrayCoordinates = OctreeUtils.toArrayCoordinates(_position, half);
             int arrayIndex = CoordinatesUtils.convert3dTo1d(arrayCoordinates, 2, 2);
@@ -139,7 +139,13 @@ public class Octree {
 
         @Override
         int getBlocksInsideCount() {
-            return 0;
+            int result = 0;
+            for (AbstractNode node : childNodes) {
+                if (node != null) {
+                    result += node.getBlocksInsideCount();
+                }
+            }
+            return result;
         }
 
         @Override
@@ -204,18 +210,19 @@ public class Octree {
         static Vec3i toArrayCoordinates(Vec3i _coordinates, int _halfSizes)
         {
             // При верно заданных координатах (все от 0 до halfSizes * 2) компоненты принимают значения от 0 до 1
-            int x = _coordinates.x / _halfSizes;
-            int y = _coordinates.y / _halfSizes;
-            int z = _coordinates.z / _halfSizes;
+            int x = _coordinates.x >> _halfSizes;
+            int y = _coordinates.y >> _halfSizes;
+            int z = _coordinates.z >> _halfSizes;
 
             return new Vec3i(x, y, z);
         }
 
         static Vec3i toInnerCoordinates(Vec3i _coordinates, int _halfSizes)
         {
-            int x = _coordinates.x % _halfSizes;
-            int y = _coordinates.y % _halfSizes;
-            int z = _coordinates.z % _halfSizes;
+            int twoPower = (1 << _halfSizes) - 1;
+            int x = _coordinates.x & twoPower;
+            int y = _coordinates.y & twoPower;
+            int z = _coordinates.z & twoPower;
 
             return new Vec3i(x, y, z);
         }
