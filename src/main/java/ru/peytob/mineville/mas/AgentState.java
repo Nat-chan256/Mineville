@@ -5,6 +5,9 @@ import ru.peytob.mineville.machine.IState;
 
 public abstract class AgentState implements IState {
 
+    /** A machine the state belongs to. */
+    protected IMachine parent;
+
     @Override
     public abstract void act();
 

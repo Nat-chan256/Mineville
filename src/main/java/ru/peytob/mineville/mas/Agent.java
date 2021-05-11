@@ -40,6 +40,11 @@ public abstract class Agent {
         thread = new Thread(() -> stateMachine.act());
     }
 
+    public Ontology getOntology()
+    {
+        return ontology;
+    }
+
     /** The main action of the agent. */
     public void act()
     {
