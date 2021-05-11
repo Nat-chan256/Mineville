@@ -5,12 +5,9 @@ import ru.peytob.mineville.game.main.Game;
 import ru.peytob.mineville.game.registry.BlockRegistry;
 import ru.peytob.mineville.game.world.Octree;
 import ru.peytob.mineville.graphic.Camera;
-import ru.peytob.mineville.graphic.Mesh;
-import ru.peytob.mineville.math.Mat4;
 import ru.peytob.mineville.math.Vec2;
 import ru.peytob.mineville.math.Vec3;
 import ru.peytob.mineville.math.Vec3i;
-import ru.peytob.mineville.opengl.shader.WorldShader;
 import ru.peytob.mineville.system.Window;
 import ru.peytob.mineville.system.WindowCallbackSet;
 
@@ -31,8 +28,11 @@ public class InGame extends AbstractState {
         cursorPosition = game.getWindow().getCursorPosition();
 
         octree = new Octree(new Vec3i());
-        for (int i = 0; i < 1; ++i) {
+        for (int i = 0; i < 16; ++i) {
             octree.setBlock(new Vec3i(i, i, i), BlockRegistry.getInstance().get((short) 1));
+            octree.setBlock(new Vec3i(i, i, 15 - i), BlockRegistry.getInstance().get((short) 1));
+            octree.setBlock(new Vec3i(15 - i, i, i), BlockRegistry.getInstance().get((short) 1));
+            octree.setBlock(new Vec3i(15 - i, i, 15 - i), BlockRegistry.getInstance().get((short) 1));
         }
 
         camera = new Camera(new Vec3(0, 0, -10 ), 0,  (float) Math.toRadians(90),

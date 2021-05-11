@@ -79,7 +79,7 @@ public class Application {
     public static void loadBlocks() {
         // todo Create block loader.
 
-        float[] northSide = new float[] {
+        float[] northSide = new float[]{
                 0.5f, 0.5f, 0.5f, // position
                 0.0f, 0.0f, 1.0f, // normal
                 0.0f, 0.0f, // texture
@@ -105,7 +105,7 @@ public class Application {
                 0.0f, 0.0f, // texture
         };
 
-        float[] southSide = new float[] {
+        float[] southSide = new float[]{
                 -0.5f, 0.5f, -0.5f, // position
                 0.0f, 0.0f, -1.0f, // normal
                 0.0f, 0.0f, // texture
@@ -131,7 +131,7 @@ public class Application {
                 0.0f, 0.0f, // texture
         };
 
-        float[] westSide = new float[] {
+        float[] westSide = new float[]{
                 -0.5f, 0.5f, 0.5f, // position
                 -1.0f, 0.0f, 0.0f, // normal
                 0.0f, 0.0f, // texture
@@ -157,7 +157,7 @@ public class Application {
                 0.0f, 0.0f, // texture
         };
 
-        float[] eastSide = new float[] {
+        float[] eastSide = new float[]{
                 0.5f, 0.5f, -0.5f, // position
                 1.0f, 0.0f, 0.0f, // normal
                 0.0f, 0.0f, // texture
@@ -183,7 +183,7 @@ public class Application {
                 0.0f, 0.0f, // texture
         };
 
-        float[] topSide = new float[] {
+        float[] topSide = new float[]{
                 -0.5f, 0.5f, -0.5f, // position
                 0.0f, 1.0f, 0.0f, // normal
                 0.0f, 0.0f, // texture
@@ -209,7 +209,7 @@ public class Application {
                 0.0f, 0.0f, // texture
         };
 
-        float[] bottomSide = new float[] {
+        float[] bottomSide = new float[]{
                 0.5f, -0.5f, -0.5f, // position
                 0.0f, -1.0f, 0.0f, // normal
                 0.0f, 0.0f, // texture

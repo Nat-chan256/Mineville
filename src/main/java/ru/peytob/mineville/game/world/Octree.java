@@ -105,6 +105,13 @@ public class Octree {
 
         @Override
         Block getBlock(Vec3i _position) {
+            if (_position.x < 0 || _position.x >= 16 ||
+                _position.y < 0 || _position.y >= 16 ||
+                _position.z < 0 || _position.z >= 16) {
+
+                return BlockRegistry.getInstance().get((short) 0);
+            }
+
             int half = sizes / 2;
             Vec3i innerPosition = OctreeUtils.toInnerCoordinates(_position, half);
             Vec3i arrayCoordinates = OctreeUtils.toArrayCoordinates(_position, half);
@@ -206,29 +213,42 @@ public class Octree {
 
             Mesh mesh;
 
-            mesh = new Mesh(data.getModel().getBottomSide());
-            mesh.draw();
-            mesh.destroy();
+            // todo delete this test shit
+            if (Octree.this.getBlock(position.plus(Directions.bottom)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getBottomSide());
+                mesh.draw();
+                mesh.destroy();
+            }
 
-            mesh = new Mesh(data.getModel().getTopSide());
-            mesh.draw();
-            mesh.destroy();
+            if (Octree.this.getBlock(position.plus(Directions.top)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getTopSide());
+                mesh.draw();
+                mesh.destroy();
+            }
 
-            mesh = new Mesh(data.getModel().getSouthSide());
-            mesh.draw();
-            mesh.destroy();
+            if (Octree.this.getBlock(position.plus(Directions.west)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getWestSide());
+                mesh.draw();
+                mesh.destroy();
+            }
 
-            mesh = new Mesh(data.getModel().getNorthSide());
-            mesh.draw();
-            mesh.destroy();
+            if (Octree.this.getBlock(position.plus(Directions.east)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getEastSide());
+                mesh.draw();
+                mesh.destroy();
+            }
 
-            mesh = new Mesh(data.getModel().getEastSide());
-            mesh.draw();
-            mesh.destroy();
+            if (Octree.this.getBlock(position.plus(Directions.south)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getSouthSide());
+                mesh.draw();
+                mesh.destroy();
+            }
 
-            mesh = new Mesh(data.getModel().getWestSide());
-            mesh.draw();
-            mesh.destroy();
+            if (Octree.this.getBlock(position.plus(Directions.north)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getNorthSide());
+                mesh.draw();
+                mesh.destroy();
+            }
         }
     }
 
