@@ -20,6 +20,10 @@ abstract class AbstractRegistry<T extends AbstractRegistrable> {
         return registryText.get(_identifier);
     }
 
+    public RegistryModifier getRegistryModifier() {
+        return new RegistryModifier();
+    }
+ 
     public class RegistryModifier {
         public RegistryModifier() {
 

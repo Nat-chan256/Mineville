@@ -3,7 +3,9 @@ package ru.peytob.mineville.system;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.system.MemoryStack;
+import ru.peytob.mineville.math.Vec2;
 
+import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -11,9 +13,12 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
+    /**
+     * 64 bits pointer to window object in memory.
+     */
     private final long pointer;
 
-    public Window(String _title, int width, int height) throws RuntimeException {
+    public Window(String _title, int _width, int _height) throws RuntimeException {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -21,7 +26,7 @@ public class Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-        pointer = glfwCreateWindow(width, height, _title, NULL, NULL);
+        pointer = glfwCreateWindow(_width, _height, _title, NULL, NULL);
         if (pointer == NULL) {
             throw new RuntimeException("Window is not created.");
         }
@@ -73,6 +78,10 @@ public class Window {
         return glfwWindowShouldClose(pointer);
     }
 
+    public void close() {
+        glfwSetWindowShouldClose(pointer, true);
+    }
+
     /**
      * Polls all events.
      */
@@ -80,7 +89,25 @@ public class Window {
         glfwPollEvents();
     }
 
+    /**
+     * Returns pointer to window.
+     * @return Pointer to window
+     */
     public long getPointer() {
         return pointer;
+    }
+
+    /**
+     * Returns cursor position relative to the content area.
+     * @return Cursor position relative to the content area.
+     */
+    public Vec2 getCursorPosition() {
+        try (MemoryStack stack = MemoryStack.stackPush())
+        {
+            final DoubleBuffer width = stack.mallocDouble(1);
+            final DoubleBuffer height = stack.mallocDouble(1);
+            glfwGetCursorPos(pointer, width, height);
+            return new Vec2((float) width.get(0), (float) height.get(0));
+        }
     }
 }

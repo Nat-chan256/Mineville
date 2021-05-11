@@ -2,6 +2,9 @@ package ru.peytob.mineville.game.world;
 
 import ru.peytob.mineville.game.object.Block;
 import ru.peytob.mineville.game.registry.BlockRegistry;
+
+import ru.peytob.mineville.graphic.Mesh;
+
 import ru.peytob.mineville.math.CoordinatesUtils;
 import ru.peytob.mineville.math.Mat4;
 import ru.peytob.mineville.math.Vec3i;
@@ -19,7 +22,7 @@ public class Octree {
     }
 
     public Octree(Vec3i position) {
-        this(position, 4);
+        this(position, 16);
     }
 
     public Vec3i getPosition() {
@@ -31,7 +34,7 @@ public class Octree {
     }
 
     public boolean setBlock(Vec3i _position, Block _block) {
-        if (_block.getId() == 0) {
+        if (_block == null || _block.getId() == 0) {
             return deleteBlock(_position);
         }
 
@@ -104,6 +107,12 @@ public class Octree {
 
         @Override
         Block getBlock(Vec3i _position) {
+            if (_position.x < 0 || _position.x >= 16 ||
+                _position.y < 0 || _position.y >= 16 ||
+                _position.z < 0 || _position.z >= 16) {
+
+                return BlockRegistry.getInstance().get((short) 0);
+            }
             int half = sizes / 2;
             Vec3i innerPosition = OctreeUtils.toInnerCoordinates(_position, half);
             Vec3i arrayCoordinates = OctreeUtils.toArrayCoordinates(_position, half);
@@ -139,7 +148,13 @@ public class Octree {
 
         @Override
         int getBlocksInsideCount() {
-            return 0;
+            int count = 0;
+
+            for (AbstractNode node : childNodes) {
+                if (node != null) {
+                    count += node.getBlocksInsideCount();
+                }
+            }
         }
 
         @Override
@@ -195,7 +210,44 @@ public class Octree {
             Mat4 result = Mat4.computeTranslation(position.toVec3());
             glUniformMatrix4fv(0, false, result.toFloatArray());
 
-            data.getMesh().draw();
+            Mesh mesh;
+
+            // todo delete this test shit
+            if (Octree.this.getBlock(position.plus(Directions.bottom)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getBottomSide());
+                mesh.draw();
+                mesh.destroy();
+            }
+
+            if (Octree.this.getBlock(position.plus(Directions.top)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getTopSide());
+                mesh.draw();
+                mesh.destroy();
+            }
+
+            if (Octree.this.getBlock(position.plus(Directions.west)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getWestSide());
+                mesh.draw();
+                mesh.destroy();
+            }
+
+            if (Octree.this.getBlock(position.plus(Directions.east)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getEastSide());
+                mesh.draw();
+                mesh.destroy();
+            }
+
+            if (Octree.this.getBlock(position.plus(Directions.south)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getSouthSide());
+                mesh.draw();
+                mesh.destroy();
+            }
+
+            if (Octree.this.getBlock(position.plus(Directions.north)).getId() == 0) {
+                mesh = new Mesh(data.getModel().getNorthSide());
+                mesh.draw();
+                mesh.destroy();
+            }
         }
     }
 
