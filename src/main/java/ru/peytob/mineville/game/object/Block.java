@@ -1,15 +1,15 @@
 package ru.peytob.mineville.game.object;
 
 import ru.peytob.mineville.game.registry.AbstractRegistrable;
-import ru.peytob.mineville.graphic.Mesh;
+
+import ru.peytob.mineville.graphic.BlockModel;
 
 public class Block extends AbstractRegistrable {
-    private final Mesh mesh;
+    private final BlockModel model;
 
     public Block(BlockBuilder _builder) {
         super(_builder.getTextId(), _builder.getId());
-
-        this.mesh = _builder.getMesh();
+        this.model = _builder.getModel();
     }
 
     @Override
@@ -17,7 +17,7 @@ public class Block extends AbstractRegistrable {
         return super.equals(obj);
     }
 
-    public Mesh getMesh() {
-        return mesh;
+    public BlockModel getModel() {
+        return model;
     }
 }
