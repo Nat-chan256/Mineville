@@ -1,7 +1,8 @@
 package ru.peytob.mineville.machine.nodes.decorators;
 
-import ru.peytob.mineville.machine.BehaviorTree.Context;
+
 import ru.peytob.mineville.machine.nodes.ChildException;
+import ru.peytob.mineville.mas.Ontology;
 
 /**
  * Inverter node class.
@@ -11,10 +12,10 @@ public class InverterNode extends DecoratorNode {
 
     /**
      * Constructor that sets the link on the context.
-     * @param context context of the tree the node belong to
+     * @param _ontology ontology of the tree the node belong to
      */
-    public InverterNode(Context context) {
-        super(context);
+    public InverterNode(Ontology _ontology) {
+        super(_ontology);
     }
 
     /**

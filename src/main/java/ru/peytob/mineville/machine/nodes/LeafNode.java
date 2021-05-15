@@ -1,7 +1,6 @@
 package ru.peytob.mineville.machine.nodes;
 
-
-import ru.peytob.mineville.machine.BehaviorTree.Context;
+import ru.peytob.mineville.mas.Ontology;
 
 /**
  * Leaf node class.
@@ -10,11 +9,11 @@ import ru.peytob.mineville.machine.BehaviorTree.Context;
 public abstract class LeafNode extends Node {
 
     /**
-     * Constructor that sets the link on the context.
-     * @param _context context of the tree the node belong to
+     * Constructor that sets the link on the ontology.
+     * @param _ontology ontology of the tree the node belong to
      */
-    public LeafNode(Context _context) {
-        super(_context);
+    public LeafNode(Ontology _ontology) {
+        super(_ontology);
     }
 
     /**
@@ -36,10 +35,8 @@ public abstract class LeafNode extends Node {
 
     /**
      * Performing task given to this leaf node.
-     * Assumes changing leaf node state
+     * Assumes changing leaf node state.
      */
-    public void performTask() {
-        state = NodeState.SUCCESS;
-    }
+    public abstract void performTask();
 
 }

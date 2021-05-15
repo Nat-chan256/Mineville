@@ -1,5 +1,7 @@
 package ru.peytob.mineville.mas;
 
+import ru.peytob.mineville.machine.nodes.ChildException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,35 +11,36 @@ import java.util.List;
 public abstract class Agent {
 
     /** List of agent's desires. */
-    protected List<Desire> desiresList;
+    private List<Desire> desiresList;
 
     /** List of agent's intentions. */
-    protected  List<Desire> intentionsList;
+    private  List<Desire> intentionsList;
 
     /** The knowledge base of the agent. */
-    protected Ontology ontology;
+    private Ontology ontology;
 
     /** State machine which determine what action agent will perform depending on its state. */
-    protected AgentStateMachine stateMachine;
+    private AgentStateMachine stateMachine;
 
-    /** Thread in which */
-    protected Thread thread;
-
-    /** Constructor which sets the agent desires and intentions and calls act() method. */
-    public Agent(Ontology _ontology)
+    /** Constructor which sets the agent desires and intentions and launches the state machine. */
+    public Agent(Ontology _ontology) throws ChildException
     {
         ontology = _ontology;
 
         desiresList = new ArrayList<>();
         intentionsList = new ArrayList<>();
 
-        stateMachine = new AgentStateMachine();
+        stateMachine = new AgentStateMachine(this);
 
-        setDesires();
+        desiresList = createDesiresList();
         setIntentions();
-        setInitialState();
-
-        thread = new Thread(() -> stateMachine.act());
+        // Launch the state machine
+        try {
+            stateMachine.setState(createInitialState());
+        } catch(InterruptedException ex)
+        {
+            System.out.println("Initializing state machine error: " + ex.getMessage());
+        }
     }
 
     public Ontology getOntology()
@@ -45,17 +48,28 @@ public abstract class Agent {
         return ontology;
     }
 
-    /** The main action of the agent. */
-    public void act()
+    public AgentStateMachine getStateMachine()
     {
-        thread.start();
+        return stateMachine;
     }
 
-    /** Sets the desires of the agent. */
-    public abstract void setDesires();
+    /** The main action of the agent. */
+    private void act()
+    {
+        stateMachine.act();
+    }
 
-    /** Sets the initial state of the state machine. */
-    public abstract void setInitialState();
+    /**
+     * Creates the list of desires which is assigned to desiresList field in the class.
+     * @return list of agent's desires
+     */
+    public abstract List<Desire> createDesiresList();
+
+    /**
+     * Creates the initial state for state machine.
+     * @return AgentState which will be set as the initial state for the state machine
+     */
+    public abstract AgentState createInitialState() throws ChildException;
 
     /** Sets the intentions, i.e. the subset of desires which the agent can achieve at the moment. */
     public void setIntentions()

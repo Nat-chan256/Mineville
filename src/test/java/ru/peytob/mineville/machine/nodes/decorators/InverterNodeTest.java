@@ -4,8 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import ru.peytob.mineville.machine.BehaviorTree;
 import ru.peytob.mineville.machine.nodes.ChildException;
+import ru.peytob.mineville.machine.nodes.ContextOntology;
 import ru.peytob.mineville.machine.nodes.LeafNode;
 import ru.peytob.mineville.machine.nodes.Node;
+import ru.peytob.mineville.mas.Ontology;
 
 /** Test the Inverter Node. */
 public class InverterNodeTest {
@@ -14,52 +16,59 @@ public class InverterNodeTest {
     @Test
     public void testInverterNodeTick()
     {
-        CheckDoorOpenBT bt = new CheckDoorOpenBT();
+        try {
+            CheckDoorOpenBT bt = new CheckDoorOpenBT(new ContextOntology());
 
-        // When the door is closed
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.FAIL, bt.tick());
+            // When the door is closed
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.FAIL, bt.tick());
 
-        // When the door is open
-        bt.setReady();
-        bt.setDoorOpen();
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.SUCCESS, bt.tick());
+            // When the door is open
+            bt.setReady();
+            bt.setDoorOpen();
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.SUCCESS, bt.tick());
+        }
+        catch (ChildException ex)
+        {
+            System.out.println("Behavior tree creation exception: " + ex.getMessage());
+        }
     }
 
     class CheckDoorOpenBT extends BehaviorTree
     {
-        public CheckDoorOpenBT()
+        public CheckDoorOpenBT(Ontology _ontology) throws ChildException
         {
-            root = new InverterNode(context);
-
-            try {
-                root.addChild(new IsDoorOpenNode(context));
-            }
-            catch(ChildException ex)
-            {
-
-            }
-
-            context.setVariable("isDoorClosed", true);
+            super(_ontology);
         }
 
         public void setDoorOpen()
         {
-            context.setVariable("isDoorClosed", false);
+            ((ContextOntology)this.getOntology()).setVariable("isDoorClosed", false);
+        }
+
+        @Override
+        public Node createTreeStructure() throws ChildException {
+            Node root = new InverterNode(this.getOntology());
+
+            root.addChild(new IsDoorOpenNode(this.getOntology()));
+
+            ((ContextOntology)this.getOntology()).setVariable("isDoorClosed", true);
+
+            return root;
         }
 
         class IsDoorOpenNode extends LeafNode
         {
 
-            public IsDoorOpenNode(Context context) {
-                super(context);
+            public IsDoorOpenNode(Ontology _ontology) {
+                super(_ontology);
             }
 
             @Override
             public void performTask()
             {
-                Boolean isDoorClosed = (Boolean)context.getVariable("isDoorClosed");
+                Boolean isDoorClosed = (Boolean)((ContextOntology)this.getOntology()).getVariable("isDoorClosed");
                 if (isDoorClosed == null)
                 {
                     state = NodeState.ERROR;

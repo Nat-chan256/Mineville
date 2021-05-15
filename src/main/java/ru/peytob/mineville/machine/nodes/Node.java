@@ -3,7 +3,7 @@ package ru.peytob.mineville.machine.nodes;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.peytob.mineville.machine.BehaviorTree.Context;
+import ru.peytob.mineville.mas.Ontology;
 
 /**
  * Node class.
@@ -15,26 +15,34 @@ public abstract class Node implements INode {
     protected List<Node> children;
 
     /** Context of tree the node belongs to. Keeps all necessary variables. */
-    protected Context context;
+    protected Ontology _ontology;
 
     /** Current subtask to be performed. */
     protected Node currentSubtask;
+
+    /** An ontology of behavior tree the node belongs to. */
+    private Ontology ontology;
 
     /** Current state of node. */
     protected NodeState state;
 
     /**
-     * Constructor that sets the link on the context.
-     * @param _context context of the tree the node belong to
+     * Constructor that sets the link on the ontology.
+     * @param _ontology an ontology of behavior tree the node belongs to
      */
-    public Node(Context _context) {
-        children = new ArrayList<Node>();
+    public Node(Ontology _ontology) {
+        children = new ArrayList<>();
         state = NodeState.READY;
-        context = _context;
+        ontology = _ontology;
     }
 
     public List<Node> getChildren() {
         return children;
+    }
+
+    public Ontology getOntology()
+    {
+        return ontology;
     }
 
     public NodeState getState() {

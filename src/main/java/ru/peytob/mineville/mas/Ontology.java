@@ -1,9 +1,41 @@
 package ru.peytob.mineville.mas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Ontology class represents the knowledge base of agents. */
-public abstract class Ontology {
+public class Ontology {
 
+    /** The list of observers.
+     * The ontology will call observer.update() method for each observer in the list
+     * when some changes take place. */
+    private List<IObserver> observersList;
 
-    /** Notify observers about changes occured in ontology. */
-    public abstract void notifyObservers();
+    /**
+     * Sets the observer. Wherein the previous observer(-s) are remove from the list.
+     * @param observer observer to be set
+     */
+    public void setObserver(IObserver observer)
+    {
+        if (observersList == null)
+        {
+            observersList = new ArrayList<>();
+        }
+        observersList.clear();
+        observersList.add(observer);
+    }
+
+    public void setObservers(List<IObserver> _observers)
+    {
+        observersList = _observers;
+    }
+
+    /** Notify observers about changes occurred in ontology. */
+    public void notifyObservers() throws InterruptedException
+    {
+        for (IObserver observer : observersList)
+        {
+            observer.update();
+        }
+    }
 }

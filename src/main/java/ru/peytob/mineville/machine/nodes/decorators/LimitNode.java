@@ -1,8 +1,9 @@
 package ru.peytob.mineville.machine.nodes.decorators;
 
 
-import ru.peytob.mineville.machine.BehaviorTree.Context;
+
 import ru.peytob.mineville.machine.nodes.ChildException;
+import ru.peytob.mineville.mas.Ontology;
 
 /**
  * Limit node class.
@@ -18,11 +19,11 @@ public class LimitNode extends DecoratorNode {
 
     /**
      * Constructor that sets the link on the context and limit.
-     * @param context context of the tree the node belong to
+     * @param _ontology ontology of the tree the node belong to
      * @param limit number of time the child node must be performed
      */
-    public LimitNode(Context context, int limit) {
-        super(context);
+    public LimitNode(Ontology _ontology, int limit) {
+        super(_ontology);
         this.limit = limit;
     }
 

@@ -1,21 +1,20 @@
 package ru.peytob.mineville.machine.nodes.decorators;
 
-import ru.peytob.mineville.machine.BehaviorTree;
 import ru.peytob.mineville.machine.nodes.ChildException;
-import ru.peytob.mineville.machine.nodes.Node;
+import ru.peytob.mineville.mas.Ontology;
 
 /**
  * The node that makes its child perform its tasks until its state is SUCCESS.
  */
-public class UntilSuccessNode extends Node {
+public class UntilSuccessNode extends DecoratorNode {
 
     /**
-     * Constructor that sets the link on the context.
+     * Constructor that sets the link on the ontology.
      *
-     * @param context context of the tree the node belong to
+     * @param _ontology ontology of the tree the node belong to
      */
-    public UntilSuccessNode(BehaviorTree.Context context) {
-        super(context);
+    public UntilSuccessNode(Ontology _ontology) {
+        super(_ontology);
     }
 
     @Override

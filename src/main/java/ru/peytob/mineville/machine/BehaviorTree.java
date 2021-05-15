@@ -6,6 +6,7 @@ import java.util.Map;
 import ru.peytob.mineville.machine.nodes.Node.NodeState;
 import ru.peytob.mineville.machine.nodes.ChildException;
 import ru.peytob.mineville.machine.nodes.Node;
+import ru.peytob.mineville.mas.Ontology;
 
 /**
  * Behavior Tree class.
@@ -13,10 +14,10 @@ import ru.peytob.mineville.machine.nodes.Node;
 public abstract class BehaviorTree implements IBehaviorTree {
 
     /** Root node. */
-    protected Node root;
+    private Node root;
 
-    /** Context of tree. */
-    protected Context context;
+    /** An ontology of an agent the behavior tree belongs to. */
+    private Ontology ontology;
 
     /** Current state of the tree. */
     protected NodeState state;
@@ -26,11 +27,17 @@ public abstract class BehaviorTree implements IBehaviorTree {
     }
 
     /**
-     * Constructor that initialize context variable.
+     * Constructor that initialize ontology variable.
      */
-    public BehaviorTree() {
-        context = new Context();
+    public BehaviorTree(Ontology _ontology) throws ChildException {
+        ontology = _ontology;
         state = NodeState.READY;
+        root = createTreeStructure();
+    }
+
+    public Ontology getOntology()
+    {
+        return ontology;
     }
 
     /**
@@ -40,6 +47,17 @@ public abstract class BehaviorTree implements IBehaviorTree {
         root.setReady();
     }
 
+    protected Node getRoot()
+    {
+        return root;
+    }
+
+    /**
+     * Creates the structure of the tree, i.e. creates all the nodes and connects them with each other.
+     * The method is called in the constructor where the return value of the method is assigned to the rood field.
+     * @return the root of the tree
+     */
+    public abstract Node createTreeStructure() throws ChildException;
 
     /**
      * Updates all tree nodes state. Also makes them perform their tasks.
@@ -51,46 +69,6 @@ public abstract class BehaviorTree implements IBehaviorTree {
             return state;
         } catch (ChildException ex) {
             return NodeState.ERROR;
-        }
-    }
-
-
-    /** Context class.
-     * Context stores variables necessary for nodes to perform their tasks.
-     * */
-    public class Context {
-        /** The map of variables.
-         * The key is the variable name, the value is the value of the corresponding variable.
-         * */
-        private Map<String, Object> variables;
-
-        /**
-         * Constructor that initialize variables map.
-         */
-        public Context() {
-            variables = new HashMap<String, Object>();
-        }
-
-        /**
-         * Sets the value of variable.
-         * If variable doesn't exist, it will be created.
-         * @param _varName the name of variable to be set
-         * @param _value value of variable
-         */
-        public void setVariable(String _varName, Object _value) {
-            variables.put(_varName, _value);
-        }
-
-        /**
-         * Getter for variable with specified name.
-         * @param _varName name of variable we want to get
-         * @return value of variable with specified name of null if it doesn't exist
-         */
-        public Object getVariable(String _varName) {
-            for (String var : variables.keySet())
-                if (var == _varName)
-                    return variables.get(var);
-            return null;
         }
     }
 }

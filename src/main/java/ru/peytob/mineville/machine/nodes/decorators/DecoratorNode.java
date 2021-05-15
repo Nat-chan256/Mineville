@@ -1,8 +1,8 @@
 package ru.peytob.mineville.machine.nodes.decorators;
 
-import ru.peytob.mineville.machine.BehaviorTree.Context;
 import ru.peytob.mineville.machine.nodes.ChildException;
 import ru.peytob.mineville.machine.nodes.Node;
+import ru.peytob.mineville.mas.Ontology;
 
 /**
  * Decorator Node class.
@@ -11,11 +11,11 @@ import ru.peytob.mineville.machine.nodes.Node;
 public abstract class DecoratorNode extends Node {
 
     /**
-     * Constructor that sets the link on the context.
-     * @param context context of the tree the node belong to
+     * Constructor that sets the link on the ontology.
+     * @param _ontology ontology of the tree the node belong to
      */
-    public DecoratorNode(Context context) {
-        super(context);
+    public DecoratorNode(Ontology _ontology) {
+        super(_ontology);
     }
 
     /**

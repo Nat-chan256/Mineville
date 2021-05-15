@@ -3,6 +3,7 @@ package ru.peytob.mineville.machine.nodes;
 import org.junit.Assert;
 import org.junit.Test;
 import ru.peytob.mineville.machine.BehaviorTree;
+import ru.peytob.mineville.mas.Ontology;
 
 /** Test leaf node. */
 public class LeafNodeTest {
@@ -12,17 +13,17 @@ public class LeafNodeTest {
 
         class SumNode extends LeafNode{
 
-            public SumNode(Context context) {
-                super(context);
+            public SumNode(Ontology _ontology) {
+                super(_ontology);
             }
 
             @Override
             public void performTask() {
-                Integer a = (Integer)context.getVariable("a");
-                Integer b = (Integer)context.getVariable("b");
+                Integer a = (Integer)((ContextOntology)this.getOntology()).getVariable("a");
+                Integer b = (Integer)((ContextOntology)this.getOntology()).getVariable("b");
                 if (a != null && b != null)
                 {
-                    context.setVariable("sum", a + b);
+                    ((ContextOntology)this.getOntology()).setVariable("sum", a + b);
                     state = NodeState.SUCCESS;
                 }
                 else
@@ -32,23 +33,29 @@ public class LeafNodeTest {
             }
         }
 
-        public CalculationsTree()
+        public CalculationsTree(Ontology _ontology) throws ChildException
         {
-            root = new SumNode(context);
-
-            context.setVariable("a", 15);
-            context.setVariable("b", 7);
+            super(_ontology);
         }
 
         public Integer getSum()
         {
-            return (Integer)context.getVariable("sum");
+            return (Integer)((ContextOntology)this.getOntology()).getVariable("sum");
+        }
+
+        @Override
+        public Node createTreeStructure() throws ChildException {
+            Node root = new SumNode(this.getOntology());
+
+            ((ContextOntology)this.getOntology()).setVariable("a", 15);
+            ((ContextOntology)this.getOntology()).setVariable("b", 7);
+            return root;
         }
 
         @Override
         public Node.NodeState tick()  {
             try {
-                return root.tick();
+                return this.getRoot().tick();
             }
             catch(ChildException ex)
             {
@@ -64,10 +71,16 @@ public class LeafNodeTest {
     @Test
     public void testLeafNodeTickAndPerformTask()
     {
-        CalculationsTree ct = new CalculationsTree();
+        try {
+            CalculationsTree ct = new CalculationsTree(new ContextOntology());
 
-        Assert.assertEquals(Node.NodeState.RUNNING, ct.tick());
-        Assert.assertEquals(Node.NodeState.SUCCESS, ct.tick());
-        Assert.assertEquals(ct.getSum(), (Integer) 22);
+            Assert.assertEquals(Node.NodeState.RUNNING, ct.tick());
+            Assert.assertEquals(Node.NodeState.SUCCESS, ct.tick());
+            Assert.assertEquals(ct.getSum(), (Integer) 22);
+        }
+        catch(ChildException ex)
+        {
+            System.out.println("Behavior tree creation error: " + ex.getMessage());
+        }
     }
 }

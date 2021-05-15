@@ -3,6 +3,7 @@ package ru.peytob.mineville.machine.nodes;
 import org.junit.Assert;
 import org.junit.Test;
 import ru.peytob.mineville.machine.BehaviorTree;
+import ru.peytob.mineville.mas.Ontology;
 
 /** Test the sequence node. */
 public class SequenceNodeTest
@@ -10,75 +11,82 @@ public class SequenceNodeTest
     @Test
     public void testSequenceNodeTick()
     {
-        CookSandwichBT bt = new CookSandwichBT();
+        try {
+            CookSandwichBT bt = new CookSandwichBT(new ContextOntology());
 
-        // When we have all ingredients
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.SUCCESS, bt.tick());
+            // When we have all ingredients
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.SUCCESS, bt.tick());
 
-        // When we don't have bread
-        bt.setReady();
-        bt.setDoesntHaveBread();
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.FAIL, bt.tick());
+            // When we don't have bread
+            bt.setReady();
+            bt.setDoesntHaveBread();
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.FAIL, bt.tick());
 
-        // When we don't have sausage
-        bt.setReady();
-        bt.setHasBread();
-        bt.setDoesntHaveSausage();
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.FAIL, bt.tick());
+            // When we don't have sausage
+            bt.setReady();
+            bt.setHasBread();
+            bt.setDoesntHaveSausage();
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.FAIL, bt.tick());
+        }
+        catch(ChildException ex)
+        {
+            System.out.println("Behavior tree creation error: " + ex.getMessage());
+        }
     }
 
 
     class CookSandwichBT extends BehaviorTree
     {
-        public CookSandwichBT()
+        public CookSandwichBT(Ontology _ontology) throws ChildException
         {
-           super();
-           root = new SequenceNode(context);
-
-           try {
-               root.addChild(new CutBreadPieceNode(context));
-               root.addChild(new CutSausagePieceNode(context));
-               root.addChild(new PutSausageOnBreadNode(context));
-           }
-           catch(ChildException ex)
-           {}
-
-           context.setVariable("hasBread", true);
-           context.setVariable("hasSausage", true);
+           super(_ontology);
         }
 
         public void setDoesntHaveBread()
         {
-           context.setVariable("hasBread", false);
+           ((ContextOntology)this.getOntology()).setVariable("hasBread", false);
         }
 
         public void setDoesntHaveSausage()
         {
-            context.setVariable("hasSausage", false);
+            ((ContextOntology)this.getOntology()).setVariable("hasSausage", false);
         }
 
         public void setHasBread()
         {
-            context.setVariable("hasBread", true);
+            ((ContextOntology)this.getOntology()).setVariable("hasBread", true);
+        }
+
+        @Override
+        public Node createTreeStructure() throws ChildException {
+            Node root = new SequenceNode(this.getOntology());
+
+            root.addChild(new CutBreadPieceNode(this.getOntology()));
+            root.addChild(new CutSausagePieceNode(this.getOntology()));
+            root.addChild(new PutSausageOnBreadNode(this.getOntology()));
+
+            ((ContextOntology)this.getOntology()).setVariable("hasBread", true);
+            ((ContextOntology)this.getOntology()).setVariable("hasSausage", true);
+            return root;
         }
 
         class CutBreadPieceNode extends LeafNode
         {
-            public CutBreadPieceNode(Context context)
+            public CutBreadPieceNode(Ontology _ontology)
             {
-                super(context);
+                super(_ontology);
             }
 
             @Override
             public void performTask()
             {
-                Boolean hasBread = (Boolean)context.getVariable("hasBread");
+                Boolean hasBread = (Boolean)((ContextOntology)this.getOntology()).getVariable("hasBread");
 
                 if (hasBread == null)
                 {
@@ -97,15 +105,15 @@ public class SequenceNodeTest
 
         class CutSausagePieceNode extends LeafNode
         {
-            public CutSausagePieceNode(Context context)
+            public CutSausagePieceNode(Ontology _ontology)
             {
-                super(context);
+                super(_ontology);
             }
 
             @Override
             public void performTask()
             {
-                Boolean hasSausage = (Boolean)context.getVariable("hasSausage");
+                Boolean hasSausage = (Boolean)((ContextOntology)this.getOntology()).getVariable("hasSausage");
 
                 if (hasSausage == null)
                 {
@@ -124,9 +132,14 @@ public class SequenceNodeTest
 
         class PutSausageOnBreadNode extends LeafNode
         {
-            public PutSausageOnBreadNode(Context context)
+            public PutSausageOnBreadNode(Ontology _ontology)
             {
-                super(context);
+                super(_ontology);
+            }
+
+            @Override
+            public void performTask() {
+                this.setState(NodeState.SUCCESS);
             }
         }
     }

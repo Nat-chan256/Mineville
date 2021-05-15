@@ -7,6 +7,7 @@ import ru.peytob.mineville.machine.nodes.*;
 import ru.peytob.mineville.machine.nodes.decorators.InverterNode;
 import ru.peytob.mineville.machine.nodes.decorators.LimitNode;
 import ru.peytob.mineville.machine.nodes.decorators.RepeatNode;
+import ru.peytob.mineville.mas.Ontology;
 
 /**
  * Test Behavior tree class.
@@ -19,25 +20,37 @@ public class BehaviorTreeTest {
     @Test
     public void testSetReady()
     {
-        ManyNodesBT bt = new ManyNodesBT();
+        try {
+            ManyNodesBT bt = new ManyNodesBT(new Ontology());
 
-        bt.tick();
+            bt.tick();
 
-        Assert.assertNotEquals(Node.NodeState.READY, bt.getState());
+            Assert.assertNotEquals(Node.NodeState.READY, bt.getState());
 
-        bt.setReady();
+            bt.setReady();
 
-        Assert.assertTrue(bt.areAllNodesReady());
+            Assert.assertTrue(bt.areAllNodesReady());
+        }
+        catch(ChildException ex)
+        {
+            System.out.println("Behavior tree creation error: " + ex.getMessage());
+        }
     }
 
     @Test
     public void testTick()
     {
-        ManyNodesBT bt = new ManyNodesBT();
+        try {
+            ManyNodesBT bt = new ManyNodesBT(new Ontology());
 
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.SUCCESS, bt.tick());
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.SUCCESS, bt.tick());
+        }
+        catch (ChildException ex)
+        {
+            System.out.println("Behavior tree creation error: " + ex.getMessage());
+        }
     }
 
     /**
@@ -47,52 +60,9 @@ public class BehaviorTreeTest {
     class ManyNodesBT extends BehaviorTree
     {
 
-        public ManyNodesBT()
+        public ManyNodesBT(Ontology _ontology) throws ChildException
         {
-            root = new SelectorNode(this.context);
-
-            // Left branch
-            SequenceNode sequenceNode = new SequenceNode(this.context);
-            SpecificLeafNode[] leafNodes = new SpecificLeafNode[5];
-
-            // Right branch
-            SelectorNode selectorNode = new SelectorNode(this.context);
-            InverterNode inverterNode = new InverterNode(this.context);
-            LimitNode limitNode = new LimitNode(this.context, 5);
-            RepeatNode repeatNode = new RepeatNode(this.context);
-            selectorNode.addChild(inverterNode);
-            selectorNode.addChild(limitNode);
-            selectorNode.addChild(repeatNode);
-
-                try {
-                for (int i = 0; i < 5; ++i)
-                {
-                    leafNodes[i] = new SpecificLeafNode(this.context);
-
-                    switch (i)
-                    {
-                        case 0:
-                        case 1:
-                            sequenceNode.addChild(leafNodes[i]);
-                            break;
-                        case 2:
-                            inverterNode.addChild(leafNodes[i]);
-                            break;
-                        case 3:
-                            limitNode.addChild(leafNodes[i]);
-                            break;
-                        case 4:
-                            repeatNode.addChild(leafNodes[i]);
-                            break;
-                    }
-                }
-                root.addChild(sequenceNode);
-                root.addChild(selectorNode);
-            }
-            catch(ChildException ex)
-            {
-                System.out.println(ex.getMessage());
-            }
+            super(_ontology);
         }
 
         /**
@@ -104,7 +74,7 @@ public class BehaviorTreeTest {
         {
             boolean result = true;
 
-            for (Node child : root.getChildren())
+            for (Node child : this.getRoot().getChildren())
             {
                 result &= isReady(child);
             }
@@ -131,16 +101,71 @@ public class BehaviorTreeTest {
             return result;
         }
 
+        @Override
+        public Node createTreeStructure() throws ChildException {
+            Node root = new SelectorNode(this.getOntology());
+
+            // Left branch
+            SequenceNode sequenceNode = new SequenceNode(this.getOntology());
+            SpecificLeafNode[] leafNodes = new SpecificLeafNode[5];
+
+            // Right branch
+            SelectorNode selectorNode = new SelectorNode(this.getOntology());
+            InverterNode inverterNode = new InverterNode(this.getOntology());
+            LimitNode limitNode = new LimitNode(this.getOntology(), 5);
+            RepeatNode repeatNode = new RepeatNode(this.getOntology());
+            selectorNode.addChild(inverterNode);
+            selectorNode.addChild(limitNode);
+            selectorNode.addChild(repeatNode);
+
+            try {
+                for (int i = 0; i < 5; ++i)
+                {
+                    leafNodes[i] = new SpecificLeafNode(this.getOntology());
+
+                    switch (i)
+                    {
+                        case 0:
+                        case 1:
+                            sequenceNode.addChild(leafNodes[i]);
+                            break;
+                        case 2:
+                            inverterNode.addChild(leafNodes[i]);
+                            break;
+                        case 3:
+                            limitNode.addChild(leafNodes[i]);
+                            break;
+                        case 4:
+                            repeatNode.addChild(leafNodes[i]);
+                            break;
+                    }
+                }
+                root.addChild(sequenceNode);
+                root.addChild(selectorNode);
+            }
+            catch(ChildException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
+
+            return root;
+        }
+
         class SpecificLeafNode extends LeafNode
         {
 
             /**
              * Constructor that sets the link on the context.
              *
-             * @param _context context of the tree the node belong to
+             * @param _ontology context of the tree the node belong to
              */
-            public SpecificLeafNode(Context _context) {
-                super(_context);
+            public SpecificLeafNode(Ontology _ontology) {
+                super(_ontology);
+            }
+
+            @Override
+            public void performTask() {
+
             }
         }
     }

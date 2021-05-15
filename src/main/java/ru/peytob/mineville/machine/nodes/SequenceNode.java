@@ -1,7 +1,6 @@
 package ru.peytob.mineville.machine.nodes;
 
-
-import ru.peytob.mineville.machine.BehaviorTree.Context;
+import ru.peytob.mineville.mas.Ontology;
 
 /**
  * Sequence node class.
@@ -11,10 +10,10 @@ public class SequenceNode extends Node {
 
     /**
      * Constructor that sets the link on the context.
-     * @param _context context of the tree the node belong to
+     * @param _ontology context of the tree the node belong to
      */
-    public SequenceNode(Context _context) {
-        super(_context);
+    public SequenceNode(Ontology _ontology) {
+        super(_ontology);
     }
 
     /**

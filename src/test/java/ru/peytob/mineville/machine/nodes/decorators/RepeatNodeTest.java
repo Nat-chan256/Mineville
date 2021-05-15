@@ -4,8 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import ru.peytob.mineville.machine.BehaviorTree;
 import ru.peytob.mineville.machine.nodes.ChildException;
+import ru.peytob.mineville.machine.nodes.ContextOntology;
 import ru.peytob.mineville.machine.nodes.LeafNode;
 import ru.peytob.mineville.machine.nodes.Node;
+import ru.peytob.mineville.mas.Ontology;
 
 /** Test the repeat node*/
 public class RepeatNodeTest {
@@ -14,33 +16,44 @@ public class RepeatNodeTest {
     @Test
     public void testRepeatNodeTick()
     {
-        EndlessBT bt = new EndlessBT();
+        try {
+            EndlessBT bt = new EndlessBT(new ContextOntology());
 
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
-        Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+            Assert.assertEquals(Node.NodeState.RUNNING, bt.tick());
+        }
+        catch(ChildException ex)
+        {
+            System.out.println("Behavior tree creation error: " + ex.getMessage());
+        }
     }
 
     class EndlessBT extends BehaviorTree
     {
-        public EndlessBT()
+        public EndlessBT(Ontology _ontology) throws ChildException
         {
-            super();
+            super(_ontology);
+        }
 
-            root = new RepeatNode(context);
+        @Override
+        public Node createTreeStructure() throws ChildException {
+            Node root = new RepeatNode(this.getOntology());
 
-            try {
-                root.addChild(new EmptyLeafNode(context));
-            }
-            catch(ChildException ex)
-            {}
+            root.addChild(new EmptyLeafNode(this.getOntology()));
+            return root;
         }
 
         class EmptyLeafNode extends LeafNode
         {
 
-            public EmptyLeafNode(Context context) {
-                super(context);
+            public EmptyLeafNode(Ontology _ontology) {
+                super(_ontology);
+            }
+
+            @Override
+            public void performTask() {
+                this.setState(NodeState.SUCCESS);
             }
         }
     }

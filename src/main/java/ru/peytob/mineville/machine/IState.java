@@ -13,11 +13,10 @@ public interface IState {
     }
 
     /**
-     * Sets the machine the state belongs to.
-     *
-     * @param _machine machine the state belong to
+     * Returns a state machine the state belongs to.
+     * @return state machine
      */
-    void setParent(IMachine _machine);
+    IMachine getParent();
 
     /**
      * The action that state must perform.
