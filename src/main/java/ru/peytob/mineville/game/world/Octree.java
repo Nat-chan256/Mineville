@@ -155,6 +155,8 @@ public class Octree {
                     count += node.getBlocksInsideCount();
                 }
             }
+
+            return count;
         }
 
         @Override

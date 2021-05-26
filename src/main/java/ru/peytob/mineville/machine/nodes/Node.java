@@ -3,6 +3,7 @@ package ru.peytob.mineville.machine.nodes;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.peytob.mineville.machine.BehaviorTree;
 import ru.peytob.mineville.mas.Ontology;
 
 /**
@@ -13,9 +14,6 @@ public abstract class Node implements INode {
 
     /** The list of the node's children. */
     protected List<Node> children;
-
-    /** Context of tree the node belongs to. Keeps all necessary variables. */
-    protected Ontology _ontology;
 
     /** Current subtask to be performed. */
     protected Node currentSubtask;

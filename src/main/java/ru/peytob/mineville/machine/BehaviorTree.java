@@ -6,6 +6,7 @@ import java.util.Map;
 import ru.peytob.mineville.machine.nodes.Node.NodeState;
 import ru.peytob.mineville.machine.nodes.ChildException;
 import ru.peytob.mineville.machine.nodes.Node;
+import ru.peytob.mineville.mas.Agent;
 import ru.peytob.mineville.mas.Ontology;
 
 /**

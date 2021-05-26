@@ -1,3 +1,9 @@
+## 150521
+
++ Fixed machine package.
++ Implemented agent's reactivity.
++ Wrote test for agent's reactivity.
+
 ## 110521
 
 + Moved Texture package from the previous project.

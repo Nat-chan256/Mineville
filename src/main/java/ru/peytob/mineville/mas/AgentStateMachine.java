@@ -21,9 +21,19 @@ public class AgentStateMachine implements IMachine, IObserver {
         agent = _agent;
     }
 
+    public Agent getAgent()
+    {
+        return agent;
+    }
+
     public Ontology getOntology()
     {
         return agent.getOntology();
+    }
+
+    public AgentState getState()
+    {
+        return currentState;
     }
 
     @Override
@@ -32,7 +42,6 @@ public class AgentStateMachine implements IMachine, IObserver {
             currentState.interrupt();
         }
         currentState = (AgentState)_state;
-        act();
     }
 
     @Override

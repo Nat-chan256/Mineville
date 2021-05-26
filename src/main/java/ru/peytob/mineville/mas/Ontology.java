@@ -11,6 +11,14 @@ public class Ontology {
      * when some changes take place. */
     private List<IObserver> observersList;
 
+    /** Waiting period for the wait state. */
+    private int waitingPeriod = 1000;
+
+    public int getWaitingPeriod()
+    {
+        return waitingPeriod;
+    }
+
     /**
      * Sets the observer. Wherein the previous observer(-s) are remove from the list.
      * @param observer observer to be set

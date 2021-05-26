@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public abstract class AgentState implements IState, IObserver {
+public abstract class AgentState implements IState, IObserver{
 
     /** Behavior tree ticked in act() method. */
     private IBehaviorTree behaviorTree;
@@ -31,6 +31,22 @@ public abstract class AgentState implements IState, IObserver {
         parent = _parent;
         behaviorTree = createBehaviorTree();
         executorService = Executors.newSingleThreadExecutor();
+    }
+
+    /**
+     * Copy constructor.
+     * @param _target the agent whose fields will be assigned to the fields of this instance
+     */
+    public AgentState(AgentState _target)
+    {
+        behaviorTree = _target.behaviorTree;
+        parent = _target.getParent();
+        executorService = Executors.newSingleThreadExecutor();
+    }
+
+    protected IBehaviorTree getBehaviorTree()
+    {
+        return behaviorTree;
     }
 
     public Ontology getOntology()
@@ -92,6 +108,21 @@ public abstract class AgentState implements IState, IObserver {
                     break;
                 }
             }
+
+            try {
+                this.getParent().getAgent().updateIntentions();
+            }
+            catch (ChildException | InterruptedException ex)
+            {
+                System.out.printf("Updating intentions error: %s%n", ex.getMessage());
+            }
         };
+    }
+
+    public abstract AgentState clone();
+
+    @Override
+    public void update() throws InterruptedException {
+
     }
 }

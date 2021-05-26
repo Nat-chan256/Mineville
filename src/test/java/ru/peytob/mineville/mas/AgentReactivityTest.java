@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import ru.peytob.mineville.machine.BehaviorTree;
 import ru.peytob.mineville.machine.IBehaviorTree;
-import ru.peytob.mineville.machine.IMachine;
-import ru.peytob.mineville.machine.IState;
 import ru.peytob.mineville.machine.nodes.ChildException;
 import ru.peytob.mineville.machine.nodes.LeafNode;
 import ru.peytob.mineville.machine.nodes.Node;
@@ -16,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/** Class that test agent's reactivity. */
 public class AgentReactivityTest {
 
     /** Check if an agent can change its intentions depending on environment changes. */
@@ -108,7 +107,7 @@ class AbstractAgent extends Agent
         }
         else
         {
-            initialState = new WaitState(this.getStateMachine());
+            initialState = new ru.peytob.mineville.mas.state.WaitState(this.getStateMachine());
         }
 
         return initialState;
@@ -237,7 +236,7 @@ class ChangeAState extends AgentState
             }
             else
             {
-                this.getParent().setState(new WaitState(this.getParent()));
+                this.getParent().setState(new ru.peytob.mineville.mas.state.WaitState(this.getParent()));
             }
             }
             catch (ChildException ex)
@@ -330,7 +329,7 @@ class ChangeBState extends AgentState
                 }
                 else
                 {
-                    this.getParent().setState(new WaitState(this.getParent()));
+                    this.getParent().setState(new ru.peytob.mineville.mas.state.WaitState(this.getParent()));
                 }
             }
             catch (ChildException ex)
